@@ -1,0 +1,5 @@
+chua tao them middleware authen 
+
+chua cho edit /sua 
+
+chua lien ket cac bang
