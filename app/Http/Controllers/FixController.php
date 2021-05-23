@@ -37,7 +37,8 @@ class FixController extends Controller
     		return view("fix.thongtin")->with('thongbao','Giang vien khong co hoc mon');
     	}
     	elseif ($count == 1) {
-    		$data = (DB::table('schedules')->where('ID_Module_Class','=',$module_class->ID_Module_Class)->paginate(10));
+            //dd($module_classes);
+    		$data = (DB::table('schedules')->where('ID_Module_Class','=',$module_classes[0]->ID_Module_Class)->paginate(10));
     		return view ('fix.thongtin', ['module_classes' => $data, 'teacher' => $teacher ] );
     	}
     	else {
@@ -87,7 +88,8 @@ class FixController extends Controller
     		return view("fix.thongtin")->with('thongbao','Giang vien khong co hoc mon');
     	}
     	elseif ($count == 1) {
-    		$data = (DB::table('schedules')->where('ID_Module_Class','=',$module_class->ID_Module_Class)->paginate(10));
+            //dd($module_classes);
+    		$data = (DB::table('schedules')->where('ID_Module_Class','=',$module_classes[0]->ID_Module_Class)->paginate(10));
     		return view ('fix.thongtin', ['module_classes' => $data, 'teacher' => $teacher ] );
     	}
     	else {

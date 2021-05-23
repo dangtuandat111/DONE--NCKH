@@ -189,11 +189,11 @@
     })
   });
 
-  $(document).ready(function() {
-      $('#pagination').on('click', function(e){
-        e.preventDefault();
-    });
-  });
+  // $(document).ready(function() {
+  //     $('#pagination').on('click', function(e){
+  //       e.preventDefault();
+  //   });
+  // });
 </script>
 @endsection
 

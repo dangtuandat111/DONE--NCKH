@@ -61,6 +61,7 @@ use Carbon\Carbon;
                with font-awesome or any other icon font library -->
 
           <!-- Phan them hoc phan -->
+         
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link active">
               <i class="nav-icon fas fa-copy"></i>
@@ -76,7 +77,8 @@ use Carbon\Carbon;
                   <p>Thông tin học phần</p>
                 </a>
               </li>
-             @if(Auth::user()->permission == 4)
+              
+             @if(Auth::user()->permission == 2)
              <li class="nav-item">
                 <a href="{{ url('/admin/hocphan/them') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
@@ -88,6 +90,7 @@ use Carbon\Carbon;
           </li>
 
           <!--Phan them Giang vien -->
+          
           <li class="nav-item has-treeview ">
             <a href="#" class="nav-link active">
            <i class="nav-icon fas fa-users-cog"></i>
@@ -104,7 +107,7 @@ use Carbon\Carbon;
                   <p>Thông tin về giảng viên </p>
                 </a>
               </li>
-              @if(Auth::user()->permission == 4)
+              @if(Auth::user()->permission == 2)
               <li class="nav-item">
                 <a href="{{ url('/admin/teacher/them') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
@@ -145,6 +148,7 @@ use Carbon\Carbon;
                 
               </p>
             </a>
+            @if(Auth::user()->permission == 1 || Auth::user()->permission == 2)
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="{{ url('/calendar') }}" class="nav-link">
@@ -163,8 +167,8 @@ use Carbon\Carbon;
               
             </ul>
             <ul class="nav nav-treeview"><hr style = " border-top: 1px solid grey; width: 80%; margin-left:20px"></ul>
-            
-            @if(Auth::user()->permission == 4)
+            @endif
+            @if(Auth::user()->permission == 2)
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="{{ url('/fullcalendar') }}" class="nav-link">
@@ -175,7 +179,7 @@ use Carbon\Carbon;
             </ul>
             @endif
             
-            @if(Auth::user()->permission == 4)
+            @if(Auth::user()->permission == 2)
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="{{ url('admin/fix/yeucau') }}" class="nav-link">
@@ -187,7 +191,7 @@ use Carbon\Carbon;
             </ul>
             <ul class="nav nav-treeview"><hr style = " border-top: 1px solid grey; width: 80%; margin-left:20px"></ul>
             @endif
-            @if(Auth::user()->permission == 5) <!--Ve sau sua lai thanh phong ban -->
+            @if(Auth::user()->permission == 5) 
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="{{ url('/admin/room/thongtin') }}" class="nav-link">
@@ -199,6 +203,7 @@ use Carbon\Carbon;
             @endif
           </li>
            <!--Phan phan giang -->
+           @if(Auth::user()->permission == 2)
           <li class="nav-item has-treeview ">
             <a href="#" class="nav-link active">
               <i class="nav-icon fas fa-columns"></i>
@@ -226,7 +231,9 @@ use Carbon\Carbon;
               </li>
             </ul>
           </li>
+          @endif
           <!--Phan Import bang file Excel -->
+          @if(Auth::user()->permission == 2)
           <li class="nav-item has-treeview ">
             <a href="" class="nav-link active">
               <i class="nav-icon fas fa-upload"></i>
@@ -254,11 +261,12 @@ use Carbon\Carbon;
               </li>
             </ul>
           </li>
-
+          @endif
           </li>
           <!--Phan them Phong -->
+          <!-- @if(Auth::user()->permission == 2)
           <li class="nav-item has-treeview ">
-            <a href="#" class="nav-link active">
+            <a href="{{ url('/admin/room/thongtin') }}" class="nav-link active">
               <i class="nav-icon fas fa-school"></i>
               
               <p>
@@ -269,13 +277,14 @@ use Carbon\Carbon;
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ url('/admin/room/thongtin') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Thông tin phòng học </p>
                 </a>
               </li>
             </ul>
           </li>
+          @endif -->
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
