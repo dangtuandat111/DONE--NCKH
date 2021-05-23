@@ -54,7 +54,6 @@
             editable: true,
             events: SITEURL + "/calendar",
             displayEventTime: true,
-            
             editable: true,
             eventRender: function (event, element, view) {
                 if (event.allDay === 'true') {
