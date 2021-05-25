@@ -31,8 +31,10 @@
              						
              						<th>Trình độ chuyên môn</th>
              						<th>Bộ môn</th>
+                        @if(Auth::user()->permission == 2)
              						<th>Xóa</th>
              						<th>Sửa</th>  
+                        @endif
              					</tr>
              				</thread>
                 <tbody>
@@ -44,8 +46,10 @@
                 			
                 			<td> {{$gv->University_Teacher_Degree}}</td>
                 			<td> {{$gv->ID_Department}}</td>
+                      @if(Auth::user()->permission == 2)
                 			<td class = " center"><i class="fas fa-trash"></i><a href="../teacher/xoa/{{$gv->ID_Teacher}}" onclick="return confirm('Xác nhận xóa giảng viên này?');">Xóa</a></td>
                 			<td class = " center"><i class="fas fa-eye"></i><a href = "../teacher/sua/{{$gv->ID_Teacher}}" >Sửa</a></td>
+                      @endif
                 		</tr>
                 	@endforeach
                 </tbody> 

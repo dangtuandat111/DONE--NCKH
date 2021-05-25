@@ -18,19 +18,6 @@ use Carbon\Carbon;
       </li>
       
     </ul>
-
-    <!-- SEARCH FORM -->
-  <!--   <form class="form-inline ml-3">
-      <div class="input-group input-group-sm">
-        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-        <div class="input-group-append">
-          <button class="btn btn-navbar" type="submit">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
-      </div>
-    </form> -->
-
   </nav>
   <!-- /.navbar -->
 
@@ -45,10 +32,24 @@ use Carbon\Carbon;
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="user-panel mt-3 pb-3 mb-3" style = 'text-align: center; font-size: 18px; text-decoration: underline; padding-bottom: 0px!important;'>
        
-        <div class="info " style = 'font-size: 16px'> <!--20-->
-          <a href="{{ url('/home') }}" class="d-block">{{ Auth::user()->username }} - <?php $dt = Carbon::now(); echo $dt->toTimeString()?></a>
+        <div class="info " > <!--20-->
+          <a href="{{ url('/home') }}" class="d-block" style = 'text-decoration: underline; padding-bottom: 0px;'>
+            <?php 
+              $id = Auth::user()->id; 
+              $permission = Auth::user()->permission;
+              if($permission == 1){
+                $dt = DB::table('teacher')->where('ID','=',$id)->get();
+                echo $dt[0]->Name_Teacher;
+              }
+              else {
+                $name = Auth::user()->username;
+                echo $name;
+              }
+            ?>
+            
+          </a>
         
         </div>
       </div>

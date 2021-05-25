@@ -77,13 +77,15 @@
                     <th width = "10%">Mã học phần</th>
          						<th width = "10%">Tên học phần</th>
          						<th width = "10%">Số tín chỉ</th>
-         						<th width = "10%">Số tiết lý thuyết</th>
-         						<th width = "10%">Số tiết bài tập</th>
-         						<th width = "10%">Số tiết thực hành</th>
-         						<th width = "10%">Số tiết bài tập lớn</th>
-         						<th width = "10%">Bộ môn</th>
+         						<th width = "5%">Số tiết lý thuyết</th>
+         						<th width = "5%">Số tiết bài tập</th>
+         						<th width = "5%">Số tiết thực hành</th>
+         						<th width = "5%">Số tiết bài tập lớn</th>
+         						<th width = "5%">Bộ môn</th>
+                    @if(Auth::user()->permission == 2)
          						<th width = "5%">Xóa</th>
          						<th width = "5%">Sửa</th>
+                    @endif
          					</tr>
          				</thread>
                 <tbody id = "tbody">
@@ -97,8 +99,10 @@
                 			<td> {{$hp->Practice}}</td>
                 			<td> {{$hp->Project}}</td>
                 			<td> {{$hp->ID_Department}}</td>
+                      @if(Auth::user()->permission == 2)
                 			<td class = " center"><i class="fas fa-trash"></i><a href="../hocphan/xoa/{{$hp->ID_Module}}" onclick="return confirm('Xác nhận xóa học phần này?');">Xóa</a></td>
                 			<td class = " center"><i class="fas fa-eye"></i><a href = "../hocphan/sua/{{$hp->ID_Module}}">Sửa</a></td>
+                      @endif
                 		</tr>
                 	@endforeach
                 </tbody> 
@@ -156,8 +160,10 @@
                   <td>${val.Practice}</td>
                   <td>${val.Project}</td>
                   <td>${val.ID_Department}</td>
+                  @if(Auth::user()->permission == 2)
                   <td class = " center"><i class="fas fa-trash"></i><a href="../hocphan/xoa/${val.ID_Module}" onclick="return confirm('Xác nhận xóa học phần này?');">Xoa</a></td>
                   <td class = " center"><i class="fas fa-eye"></i><a href = "../hocphan/sua/${val.ID_Module}">Sua</a></td>
+                  @endif
                 </tr>
                  `;
               $("#tbody").append(item);
