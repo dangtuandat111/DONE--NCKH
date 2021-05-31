@@ -28,7 +28,6 @@
                 </div>
               </div>
               <div class="card-body">
-
                 <div class = "row" style = "margin-bottom: 10px">
 
                   <!-- Năm học -->

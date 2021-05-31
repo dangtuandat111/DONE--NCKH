@@ -16,8 +16,9 @@ class AssignController extends Controller
 {
     //
     public function index() {
-    	$schedules = DB::table('schedules')->select(DB::raw(' schedules.ID_Module_Class ,Module_Class_Name,Number_Reality,School_Year,ID_Teacher'))->join('module_class','module_class.ID_Module_Class', '=' , 'schedules.ID_Module_Class')->whereNULL('ID_Teacher')->paginate(10);
-    	
+    	$schedules = DB::table('schedules')->select(DB::raw('distinct schedules.ID_Module_Class ,Module_Class_Name,Number_Reality,School_Year,ID_Teacher'))->join('module_class','module_class.ID_Module_Class', '=' , 'schedules.ID_Module_Class')->whereNULL('ID_Teacher')->paginate(10);
+    
+
         $maAcc = Auth::user()->id;
         
         $maBM = DB::table('department')->where('ID','=',$maAcc)->get();

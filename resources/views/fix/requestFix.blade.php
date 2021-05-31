@@ -84,7 +84,7 @@
                     <td>{{$fix_index->ID_Teacher_Option}}</td>
                     <td>
                       <button type="button" class="btn btn-success btn-sm"><a href="../fix/xacnhan/{{$fix_index->ID_Fix}}" style = " text-decoration: none; color: white" onclick="return confirm('Xác nhận đồng ý thay đổi giờ giảng?');">Chấp nhận</a></button>
-                      <button type="button" class="btn btn-danger btn-sm"><a href="../fix/xacnhan/{{$fix_index->ID_Fix}}" style = " text-decoration: none; color: white" onclick="return confirm('Xác nhận từ chối thay đổi giờ giảng?');">Từ chối</a></button>
+                      <button type="button" class="btn btn-danger btn-sm"><a href="../fix/tuchoi/{{$fix_index->ID_Fix}}" style = " text-decoration: none; color: white" onclick="return confirm('Xác nhận từ chối thay đổi giờ giảng?');">Từ chối</a></button>
                     </td>
                   </tr>
                   @endforeach
