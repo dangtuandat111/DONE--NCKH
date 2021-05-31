@@ -308,8 +308,8 @@ class ScheduleImport implements ToCollection
 
         //Lấy thông tin lớp học phần
         //Nếu đã có lớp học phần đó thì bỏ qua
-        $md = new module_class();
-        $md = DB::table('module_class')->where('ID_Module_Class','=', $ID_Module_Class)->get();
+        // $md = new module_class();
+        // $md = DB::table('module_class')->where('ID_Module_Class','=', $ID_Module_Class)->get();
         $count_md = DB::table('module_class')->where('ID_Module_Class','=', $ID_Module_Class)->count();
         //Hết lấy thông tin lớp học phần
 
