@@ -223,7 +223,7 @@ class ScheduleImport implements ToCollection
         //Kiểm tra phòng học 
         
         if(!is_null($phong)) {
-            $checkedRoom = new rooms();
+            //$checkedRoom = new rooms();
             $count_checkedRoom = DB::table('room')->where('ID_Room','=',$phong)->count();
             if($count_checkedRoom == 0 ) {
                 return 'Không tồn tại phòng học: '.$phong;
