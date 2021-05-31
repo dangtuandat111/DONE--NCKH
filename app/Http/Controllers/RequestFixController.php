@@ -55,7 +55,7 @@ class RequestFixController extends Controller
             'day' => $id_sch[0]->Day_Schedules,
             'tt' => $m
         ],function($message) {
-            $message->from('hkim661990@gmail.com', '');
+            //$message->from('hkim661990@gmail.com', '');
             $message->to('hkim661990@gmail.com','');
             $message->subject('Phản hồi yêu cầu thay đổi giờ giảng');
         });
