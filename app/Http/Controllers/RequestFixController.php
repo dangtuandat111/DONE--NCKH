@@ -24,6 +24,8 @@ class RequestFixController extends Controller
     	// DB::table('fix')->where('ID_Fix','=',$id)->update(['Time_Accept_Request'=>$now]);
     	// DB::table('fix')->where('ID_Fix','=',$id)->update(['Status_Fix'=>'Chấp nhận']);
         $m = 'Yêu cầu của bạn được chấp nhận';
+
+        //Thuc hien thay doi vao bang schedules
         $this->sendMail($id,$m);
     	return back()->with('thongbao','Chấp nhận thành công');
     }
@@ -53,7 +55,7 @@ class RequestFixController extends Controller
             'day' => $id_sch[0]->Day_Schedules,
             'tt' => $m
         ],function($message) {
-            //$message->from('hkim661990@gmail.com', '');
+            $message->from('hkim661990@gmail.com', '');
             $message->to('hkim661990@gmail.com','');
             $message->subject('Phản hồi yêu cầu thay đổi giờ giảng');
         });

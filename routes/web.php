@@ -65,6 +65,8 @@ Route::group(['middleware' => 'auth' ], function() {
 			Route::post('phong',  'App\Http\Controllers\importController@postRoom');
 			Route::get('hocphan', 'App\Http\Controllers\importController@getModules');
 			Route::post('hocphan',  'App\Http\Controllers\importController@postModules');
+
+			//Route::get('check', 'App\Http\Controllers\importController@getCheck');
 		});
 
 		Route::group(['prefix' => 'export'], function() {

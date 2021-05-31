@@ -33,6 +33,7 @@
 				@foreach($modules as $bm)
               		<form action = "{{$bm->ID_Module}}" method = "POST">
 	              		<input type = "hidden"  name = "_token" value = "{{csrf_token()}}" />
+
 		            	<div class="form-group">
 		            		<label for="inputID_module">Mã học phần</label>
 		                	<input type="text" name="inputID_module" class="form-control" placeholder="{{$modules->get('ID_Module') }}" value="{{$bm->ID_Module}}">
@@ -82,7 +83,7 @@
 				                	@endforeach
 			                </select>
 			            </div>
-
+			            @endforeach
 			            <div class="row">
 					        <div class="col-12">
 					          <a href="{{ url('/admin/hocphan/thongtin') }}" class="btn btn-secondary">Hủy</a>
@@ -90,9 +91,9 @@
 					        </div>
 					    </div>
              		</form>
+             	
             </div>
         </div>
     </div>
 </section>
-@endsection
 @stop()

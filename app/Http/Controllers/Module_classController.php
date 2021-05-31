@@ -12,7 +12,7 @@ class Module_classController extends Controller
 {
     //
     public function getThongtin() {
-    	$module_class = DB::table('module_class')->Paginate(10);
+    	$module_class = DB::table('module_class')->where('ID_Module','LIKE','%'.'MHT'.'%')->Paginate(10);
     	$credits = DB::select(DB::raw("SELECT DISTINCT Credit FROM module ORDER BY Credit asc"));
 		$departments = DB::select(DB::raw("SELECT ID_Department,Department_Name FROM department"));
 		$module = DB::select(DB::raw("SELECT DISTINCT ID_Module,Module_Name FROM module "));

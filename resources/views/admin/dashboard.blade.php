@@ -149,7 +149,7 @@ use Carbon\Carbon;
                 
               </p>
             </a>
-            @if(Auth::user()->permission == 1 || Auth::user()->permission == 2)
+            @if(Auth::user()->permission == 1 )
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="{{ url('/calendar') }}" class="nav-link">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use App\Event;	
 //use DB;
 //use Session;
@@ -17,6 +18,7 @@ use Validator;
 
 use Excel;
 use Session;
+use DB;
 
 class importController extends Controller
 {
@@ -56,12 +58,8 @@ class importController extends Controller
 
             }
 
-            try {
-           
-                Excel::import($import,$request->giangvien);
-            }catch(Exception $ex) {
-               return Redirect('admin/import/giangvien')->withErrors($ex->getMessage());
-            }
+            Excel::import($import,$request->giangvien);
+            
             // return Redirect('admin/import/giangvien')->withErrors("Lỗi");
             //return back()->with('thongbao',' Them thanh cong');
            
@@ -89,14 +87,47 @@ class importController extends Controller
             return back()->withError($validator);
 
         }
-        try {
-           
-            Excel::import($import,$request->lophocphan);
-            
-        }catch(Exception $ex) {
-           return Redirect('admin/import/lophocphan')->withErrors($ex->getMessage());
-        }
-         return back()->with('thongbao',' Them thanh cong');
-   	   
+        
+        Excel::import($import,$request->lophocphan);
+        return back();
     }
+
+    //Phát triển thêm
+    public function getCheck(Request $request) {
+        if(count($request->request) != 2) {
+            $data = [
+            'Tình trạng' => "Có lỗi: ",
+            ];
+            return Response::json($data);
+        };
+
+        $stt = 1;
+        foreach($request->request as $info) {
+            if($stt == 1) {
+                $NH = $info;
+                $stt++;
+            }
+            else {
+                $DH = $info;
+                break;
+            }
+        }
+        if($DH == 1) {
+            $schedule = $NH;
+        }
+        else $schedule = $NH.".".$DH;
+        echo $schedule;
+        $count = DB::table('schedules')->where('ID_Module_Class','LIKE', '%'.$schedule.'%')->count();
+        if($count > 0) {
+            $success = [
+                'Tình trạng' => "Đã tồn tại ",
+            ];
+        }
+        $success = [
+            'tình trạng' => "thành công",
+        ];
+        echo "<br />".$count;
+        //return Response::json($data);
+    }
+
 }
