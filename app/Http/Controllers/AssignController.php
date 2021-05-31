@@ -104,7 +104,7 @@ class AssignController extends Controller
             return back()->withErrors($Error);
         }
         else {
-            //return back()->with('thongbao','Thành công');
+            return back()->with('thongbao','Thành công');
         }
     }
 
@@ -160,7 +160,7 @@ class AssignController extends Controller
     }
 
     public function index2() {
-        $schedules = DB::table('schedules')->select(DB::raw(' schedules.ID_Module_Class ,Module_Class_Name,Number_Reality,School_Year,ID_Teacher'))->join('module_class','module_class.ID_Module_Class', '=' , 'schedules.ID_Module_Class')->where('ID_Teacher','<>',null)->paginate(10);
+        $schedules = DB::table('schedules')->select(DB::raw(' distinct schedules.ID_Module_Class ,Module_Class_Name,Number_Reality,School_Year,ID_Teacher'))->join('module_class','module_class.ID_Module_Class', '=' , 'schedules.ID_Module_Class')->where('ID_Teacher','<>',null)->paginate(10);
         $school = DB::select(DB::raw("SELECT DISTINCT School_Year FROM module_class "));
         $departments = DB::select(DB::raw("SELECT ID_Department,Department_Name FROM department"));
         $module = DB::select(DB::raw("SELECT DISTINCT ID_Module,Module_Name FROM module "));
