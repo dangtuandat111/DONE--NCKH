@@ -345,7 +345,7 @@ class ScheduleImport implements ToCollection
 		while($dateEnd >= $dateBegin ) {
 			
             //Kiểm tra lịch trình
-			$sch = new schedules();
+			//$sch = new schedules();
             echo "<br />".($ID_Module_Class_2);
             $dateBegin = Carbon::parse($dateBegin)->format('Y-m-d');
             echo "<br />".$dateBegin;
