@@ -16,12 +16,12 @@ class AssignController extends Controller
 {
     //
     public function index() {
-    	$schedules = DB::table('schedules')->select(DB::raw('distinct schedules.ID_Module_Class ,Module_Class_Name,Number_Reality,School_Year,ID_Teacher'))->join('module_class','module_class.ID_Module_Class', '=' , 'schedules.ID_Module_Class')->whereNULL('ID_Teacher')->paginate(10);
+    	$schedules = DB::table('schedules')->select(DB::raw('distinct schedules.ID_Module_Class ,Module_Class_Name,Number_Reality,School_Year,ID_Teacher'))->join('module_class','module_class.ID_Module_Class', '=' , 'schedules.ID_Module_Class')->whereNULL('ID_Teacher')->where('schedules.ID_Module_Class','LIKE','MHT%')->orderBy('schedules.ID_Module_Class', 'asc')->paginate(10);
     
 
         $maAcc = Auth::user()->id;
         
-        $maBM = DB::table('department')->where('ID','=',$maAcc)->get();
+        $maBM = DB::table('department')->where('ID_Account','=',$maAcc)->get();
         
         $teacher = DB::table('teacher')->where('Is_Delete','=','0')->where('ID_Department','=',$maBM[0]->ID_Department)->get();
 
@@ -29,83 +29,96 @@ class AssignController extends Controller
 
         $school = DB::select(DB::raw("SELECT DISTINCT School_Year FROM module_class "));
         $departments = DB::select(DB::raw("SELECT ID_Department,Department_Name FROM department"));
-        $module = DB::select(DB::raw("SELECT DISTINCT ID_Module,Module_Name FROM module "));
+        $module = DB::select(DB::raw("SELECT DISTINCT ID_Module,Module_Name FROM module where ID_Module like 'MHT%' order By Module_Name ASC"));
+        
 
         //dd($schedules);
         return view ('assign.assign', ['schedules' => $schedules,'teacher' => $teacher,'school' => $school, 'module' => $module,'departments' => $departments, 'teacher_All' => $teacher_All] );
     }
 
     public function submit(Request $request) {
-    	   // print_r($request->request);
-    	$i = 0;
-        $j = 0;
+    	dd($request->request);
     	$array = [] ;
     	$magv = '0086';
         $Error = '';
+        $numberRequest = 0 ;
 
-    	foreach($request->request as $key2 =>$value) {
+        //Dem so truong da them thanh cong
+        $numberInsertedValue = 0;
+        /*Data có dạng 
+        "_token" => "BlZuo0F7yQVQgZtbEivpJ5WBTqAecdShW9uVzqmK"
+        "Option_GV" => "Value_GV2"
+        "select_gv" => null
+        "select_bm" => "MHT"
+        "select_gv_2" => "0086"
+        "ANHB1_4-1-20/(N15_BT1)" => "ANHB1.4-1-20/(N15.BT1)"
+        "ANHB1_4-1-20/(N16)" => "ANHB1.4-1-20/(N16)"
+        "ANHB1_4-1-20/(N16_BT1)" => "ANHB1.4-1-20/(N16.BT1)"
+        */
+        //Lấy mã giảng viên
+        if(is_null($request->input('select_gv'))) {
+            $magv = $request->input('select_gv_2');
+        }
+        else {
+            $magv = $request->input('select_gv');
+        }
+        //Hết lấy mã giảng viên
+        $numberRequest = count($request->all());
+    	foreach($request->request as  $key2=>$value) {
+
+
+            if( $numberRequest >= count($request->all()) - 4) {
+                $numberRequest--;
+                continue;
+            }
+            $numberRequest--;
             print_r($key2);
-            if($j==2) {
-                $magv = $value;
-                //echo $value."<br />"; 
-               
-                $j++;
+			$test1 = explode("/",$key2)[0];
+			$test2 = explode("/",$key2)[1];
+			$key2 = $test1." ".$test2;
+			$key2 = str_replace('_', '.', $key2);
+            //Ket thuc lay lai ma hoc phan
+            
+            //Kiem tra du lieu
+            if($magv == '') {
+                $Error = 'Thiếu tên giảng viên.';
+                break;
             }
-            else {
-                $j++;
+			$sch = DB::table('schedules')->where('ID_Module_Class',   $key2)->get();
+            $sch_gv = DB::table('schedules')->join('module_class','schedules.ID_Module_Class','=','module_class.ID_Module_Class')->where('ID_Teacher',   $magv)->get();
+            
+            if($sch->isEmpty()) {
+                $Error = 'Mã học phần không tồn tại';
+                break;
             }
-    		if($i == 4) {
-				//Lay lai ma hoc phan 
-				$test1 = explode("/",$key2)[0];
-				$test2 = explode("/",$key2)[1];
-				$key2 = $test1." ".$test2;
-				$key2 = str_replace('_', '.', $key2);
-                //Ket thuc lay lai ma hoc phan
-
-                //Kiem tra du lieu
-                if($magv == '') {
-                    //echo "gv".$magv;
-                    $Error = 'Thiếu tên giảng viên.';
-                    break;
-                }
-				$sch = DB::table('schedules')->where('ID_Module_Class',   $key2)->get();
-                $sch_gv = DB::table('schedules')->join('module_class','schedules.ID_Module_Class','=','module_class.ID_Module_Class')->where('ID_Teacher',   $magv)->get();
+            if($sch_gv->isEmpty()) {
+                DB::table('module_class')->where('ID_Module_Class', $key2)->update(['ID_Teacher' => $magv]);
                 
-                if($sch->isEmpty()) {
-                    $Error = 'Mã học phần không tồn tại';
-                    break;
-                }
-                if($sch_gv->isEmpty()) {
-                    $Error = 'Lịch trình không tồn tại';
-                    break;
-                }
-                //Ket thuc kiem tra du lieu
+                continue;
+            }
+            //Ket thuc kiem tra du lieu
+            foreach($sch_gv as $value1) {
+                foreach ($sch as  $value2) {
+                    if(($value1->Day_Schedules == $value2->Day_Schedules and $value1->Shift_Schedules == $value2->Shift_Schedules) ){
 
-                foreach($sch_gv as $value1) {
-                    foreach ($sch as  $value2) {
-                        if(($value1->Day_Schedules == $value2->Day_Schedules and $value1->Shift_Schedules == $value2->Shift_Schedules) ){
-
-                            $Error = "Lỗi ".$value1->ID_Module_Class." Thời gian: ".$value1->Day_Schedules." Trùng với môn: ".$value2->ID_Module_Class;
-                            break 2;
-                            // return back()->withErrors("Lỗi ".$value1->ID_Module_Class." Thời gian: ".$value1->Day_Schedules." Trùng với môn: ".$value2->ID_Module_Class);
-                        }
+                        $Error = "Lỗi ".$value1->ID_Module_Class." Thời gian: ".$value1->Day_Schedules." Trùng với môn: ".$value2->ID_Module_Class;
+                        break 2;
                     }
                 }
-                //Luu qua trinh phan giang
-				DB::table('module_class')->where('ID_Module_Class', $key2)->update(['ID_Teacher' => $magv]);
-                //Ket thuc luu qua trinh phan giang
-    		}
-    		else {
-    			$i = $i + 1;
-    		}
-    		
-    	}
+            }
+            //Luu qua trinh phan giang
+			DB::table('module_class')->where('ID_Module_Class', $key2)->update(['ID_Teacher' => $magv]);
+            //Ket thuc luu qua trinh phan giang
+            $numberInsertedValue++;
+        }
+
         if($Error != '') {
             return back()->withErrors($Error);
         }
         else {
-            return back()->with('thongbao','Thành công');
+            return back()->with('thongbao','Thành công: '.$numberInsertedValue);
         }
+
     }
 
 

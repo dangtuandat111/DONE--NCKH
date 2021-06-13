@@ -32,27 +32,38 @@
 
                   <!-- Năm học -->
                   <div class = "col-2">
-                    <select id="select_sy" class = "custom-select">
-                        <option value ="">Chọn năm học</option>
+                    <select id="select_sy" class = "custom-select" style = "padding-right: 0px;">
+                        <option value ="" size="3" >Chọn năm học</option>
                         @foreach($school as $sch) 
-                          <option class = "option" value = "{{$sch->School_Year}}">{{$sch->School_Year}}</option>
+                          <option class = "option" value = "{{$sch->School_Year}}">
+                          <?php 
+                            
+                            $HK = explode( '-', $sch->School_Year)[0];
+                            $NH = explode( '-', $sch->School_Year)[1];
+                            $NH = "20".$NH;
+                            $NH_number = (int) $NH+1;
+                            $NH = $NH."-".$NH_number;
+                            echo "Kì ".$HK." ".$NH;
+                          ?>
+
+                          </option>
                         @endforeach()
                     </select>
                   </div>
 
                   <!-- Đợt học -->
-                  <div class = "col-2">
-                    <select id="select_DotHoc" class = "custom-select">
+                  <div class = "col-2" style = "padding-left: 0px;">
+                    <select id="select_DotHoc" class = "custom-select" >
                         <option value ="">Chọn đợt học</option>
                         @for ($i = 1; $i <= 5; $i++)
-                           <option value="{{ $i }}">{{ $i }}</option>
+                           <option value="{{ $i }}">Đợt học {{ $i }}</option>
                         @endfor 
                     </select>
                   </div>
 
                   <!-- Kiểu học phần -->
-                  <div class = "col-2">
-                    <select id="kind" class = "custom-select">
+                  <div class = "col-2" style = "padding-left: 0px;">
+                    <select id="kind" class = "custom-select" >
                         <option value = "">Chọn kiểu học phần</option>
                         <option value="LT">Lý thuyết </option>
                         <option value="BT">Bài tập </option>
@@ -67,8 +78,8 @@
                 <div class= "row">
                   <!-- Hoc phan -->
                   <div class = "col-6">
-                    <select id="select_md" class = "custom-select">
-                        <option value ="">Chọn học phần</option>
+                    <select id="select_md" class = "custom-select" >
+                        <option value ="" hidden>Chọn học phần</option>
                           @foreach($module as $hp) 
                             <option class = "option" value = "{{$hp->ID_Module}}">{{$hp->Module_Name}}</option>
                           @endforeach()
@@ -78,7 +89,7 @@
                   <!-- Bo mon -->
                   <div class = "col-6">
                     <select id="select_dp" class = "custom-select">
-                        <option value ="">Chọn bộ môn</option>
+                        <option value ="" hidden>Chọn bộ môn</option>
                         @foreach($departments as $hp) 
                           <option class = "option" value = "{{$hp->ID_Department}}">{{$hp->Department_Name}}</option>
                         @endforeach()
@@ -115,7 +126,7 @@
                   <input type = "hidden"  name = "_token" value = "{{csrf_token()}}" />
                   <div class="row">
                     <div class="col-12">
-                      <input type="submit" value="Phan Giang" class="btn btn-primary" id="submitPG">
+                      <input type="submit" value="Phân Giảng" class="btn btn-primary" id="submitPG">
                     </div>
                   </div>
 
@@ -142,13 +153,22 @@
                           @endforeach()
                       </select>
                     </div>
-                    <div class = "col-6" style = "margin-top: 10px;" id = "gv2">
-                      <select id="select_gv_2" class="form-control custom-select" name ="select_gv_2">
+                    <div  style = "margin-top: 10px;" id = "gv2" class=" col-12">
+                      <select class="custom-select col-5" name ="select_bm"  id = "select_bm">
+                          <option value ="" >Chọn bộ môn</option>
+                          @foreach($departments as $hp) 
+                            <option class = "option" value = "{{$hp->ID_Department}}">{{$hp->Department_Name}}</option>
+                          @endforeach()
+                      </select>
+
+                      <select id="select_gv_2" class="form-control custom-select col-6" name ="select_gv_2" style = "margin-left: 10px;">
                           <option value ="">Chọn giảng viên</option>
                           @foreach($teacher_All as $gv) 
                             <option class = "option" value = "{{$gv->ID_Teacher}}">{{$gv->Name_Teacher}}</option>
                           @endforeach()
                       </select>
+                     
+                      
                     </div>
                     
                   </div>
@@ -203,11 +223,12 @@
   $(document).ready(function() {
     $("#gv2").hide();
     $("#gv1").show();
-    
-    $("#select_dp").change(function() {
+
+    $("#select_bm").change(function() {
       var dp = $(this).val();
+      console.log(dp);
       $.get("getTeacher/"+dp,function(data){
-        $("#select_gv").html(data);
+        $("#select_gv_2").html(data);
       });
     });
 

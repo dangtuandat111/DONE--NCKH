@@ -122,7 +122,7 @@ class FixController extends Controller
     }
 
     public function submitChange(Request $request) {
-    	//dd($request);
+    	dd($request);
     	$ID_Schedules = $request->inputSchedules;
     	// echo "Dayla: ".$ID_Schedules."<br />";
     	$inputDate = $request->inputDate;

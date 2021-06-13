@@ -264,6 +264,21 @@ use Carbon\Carbon;
           </li>
           @endif
           </li>
+          <!-- Thong ke du lieu -->
+          @if(Auth::user()->permission == 2)
+          <li class="nav-item has-treeview ">
+            <a href="{{ url('/admin/thongke/thongtin') }}" class="nav-link active">
+              <i class="nav-icon fas fa-chart-pie"></i>
+              <p>
+                Thống kê
+                <!-- <i class="right fas fa-angle-left"></i> -->
+                
+              </p>
+            </a>
+            
+          </li>
+          @endif
+          </li>
           <!--Phan them Phong -->
           <!-- @if(Auth::user()->permission == 2)
           <li class="nav-item has-treeview ">

@@ -87,7 +87,7 @@ class ScheduleImport implements ToCollection
         if($isError == 1) {
             return back()->withErrors($status.": Dòng ".$dong)->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess);
         }
-    	else return back()->with('thongbao','Thành công'.$this->numberSuccess);
+    	else return back()->with('thongbao','Thành công: '.$this->numberSuccess);
     }
 
     public function dataChange(Collection $row,$dong){
