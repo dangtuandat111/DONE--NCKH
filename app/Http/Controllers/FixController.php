@@ -18,7 +18,7 @@ class FixController extends Controller
 		//Lay id account nguoi dang nhap
     	$id = Auth::user()->id;
     	//Tim id giang vien tu id account
-    	$id_teacher = DB::table("teacher")->where("ID","=",$id)->get();
+    	$id_teacher = DB::table("teacher")->where("ID_Account","=",$id)->get();
     	//print_r($id_teacher);
     	foreach($id_teacher as $value => $res) {
     		// echo "<br />";
@@ -72,7 +72,7 @@ class FixController extends Controller
     	//Lay id account nguoi dang nhap
     	$id = Auth::user()->id;
     	//Tim id giang vien tu id account
-    	$id_teacher = DB::table("teacher")->where("ID","=",$id)->get();
+    	$id_teacher = DB::table("teacher")->where("ID_Account","=",$id)->get();
     	//print_r($id_teacher);
     	foreach($id_teacher as $value => $res) {
     		$getID = $res->ID_Teacher;
@@ -138,7 +138,7 @@ class FixController extends Controller
     	//Lay id account nguoi dang nhap
     	$id = Auth::user()->id;
     	//Lấy id giảng viên
-    	$id_teacher = DB::table("teacher")->where("ID","=",$id)->get();
+    	$id_teacher = DB::table("teacher")->where("ID_Account","=",$id)->get();
     	foreach($id_teacher as $value => $res) {
     		$getID = $res->ID_Teacher;
     	}
