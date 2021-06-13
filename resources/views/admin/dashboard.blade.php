@@ -40,7 +40,7 @@ use Carbon\Carbon;
               $id = Auth::user()->id; 
               $permission = Auth::user()->permission;
               if($permission == 1){
-                $dt = DB::table('teacher')->where('ID','=',$id)->get();
+                $dt = DB::table('teacher')->where('ID_Account','=',$id)->get();
                 echo $dt[0]->Name_Teacher;
               }
               else {
