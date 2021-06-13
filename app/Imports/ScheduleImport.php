@@ -45,6 +45,7 @@ class ScheduleImport implements ToCollection
     public $numberSuccess = 0;
     public function collection(Collection $collection)
     {
+        dd($collection);
     	$i = 0;
     	$e = 0;
         $dong = 0 ;
@@ -68,7 +69,7 @@ class ScheduleImport implements ToCollection
                     
     				if($status != 'Thành công') {
                         $isError = 1;
-                        echo "<br />".$status." ".$dong;
+                        //echo "<br />".$status." ".$dong;
                         break;
                         
                     }
@@ -87,11 +88,10 @@ class ScheduleImport implements ToCollection
         if($isError == 1) {
             return back()->withErrors($status.": Dòng ".$dong)->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess);
         }
-    	else return back()->with('thongbao','Thành công: '.$this->numberSuccess);
+    	//else return back()->with('thongbao','Thành công: '.$this->numberSuccess);
     }
 
     public function dataChange(Collection $row,$dong){
-
         //Lay toan bo thong tin tai dong
     	$mahp = $row[2];
     	$sotinchi = $row[3];

@@ -89,7 +89,7 @@ class importController extends Controller
         }
         
         Excel::import($import,$request->lophocphan);
-        return back();
+        //return back();
     }
 
     //Phát triển thêm

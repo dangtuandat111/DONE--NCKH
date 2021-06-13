@@ -31,13 +31,12 @@
                 <div class = "row" style = "margin-bottom: 10px">
 
                   <!-- Năm học -->
-                  <div class = "col-2">
+                  <div class = "col-4">
                     <select id="select_sy" class = "custom-select" style = "padding-right: 0px;">
                         <option value ="" size="3" >Chọn năm học</option>
                         @foreach($school as $sch) 
                           <option class = "option" value = "{{$sch->School_Year}}">
                           <?php 
-                            
                             $HK = explode( '-', $sch->School_Year)[0];
                             $NH = explode( '-', $sch->School_Year)[1];
                             $NH = "20".$NH;
@@ -52,7 +51,7 @@
                   </div>
 
                   <!-- Đợt học -->
-                  <div class = "col-2" style = "padding-left: 0px;">
+                  <div class = "col-4" style = "padding-left: 0px;">
                     <select id="select_DotHoc" class = "custom-select" >
                         <option value ="">Chọn đợt học</option>
                         @for ($i = 1; $i <= 5; $i++)
@@ -62,14 +61,14 @@
                   </div>
 
                   <!-- Kiểu học phần -->
-                  <div class = "col-2" style = "padding-left: 0px;">
+                  <div class = "col-4" style = "padding-left: 0px;">
                     <select id="kind" class = "custom-select" >
                         <option value = "">Chọn kiểu học phần</option>
                         <option value="LT">Lý thuyết </option>
                         <option value="BT">Bài tập </option>
                         <option value="TH">Thực hành </option>
                         <option value="TL">Tự luận </option>
-                        
+                        <option value="DA">Đồ án </option>
                     </select>
                   </div>
 
@@ -77,9 +76,9 @@
 
                 <div class= "row">
                   <!-- Hoc phan -->
-                  <div class = "col-6">
+                  <div class = "col-12">
                     <select id="select_md" class = "custom-select" >
-                        <option value ="" hidden>Chọn học phần</option>
+                        <option value ="" >Chọn học phần</option>
                           @foreach($module as $hp) 
                             <option class = "option" value = "{{$hp->ID_Module}}">{{$hp->Module_Name}}</option>
                           @endforeach()
@@ -87,16 +86,14 @@
                   </div>
 
                   <!-- Bo mon -->
-                  <div class = "col-6">
+                  <!-- <div class = "col-6">
                     <select id="select_dp" class = "custom-select">
-                        <option value ="" hidden>Chọn bộ môn</option>
+                        <option value ="" >Chọn bộ môn</option>
                         @foreach($departments as $hp) 
                           <option class = "option" value = "{{$hp->ID_Department}}">{{$hp->Department_Name}}</option>
                         @endforeach()
                     </select>
-                  </div>
-
-                  
+                  </div> -->
 
                 </div>
                 <div class = "row">
@@ -175,33 +172,38 @@
 
                   <table class="table table-bordered table-striped" id = "table_data">
                       <thead>
-                      <tr>
-                        <th></th>
-                        <th>Mã lớp học phần</th>
-                        <th>Tên lớp học phần</th>
-                        <th>Số sinh viên</th>
-                        <th>Kì học</th>
-                      </tr>
+                          <tr>
+                              <th></th>
+                              <th>Mã lớp học phần</th>
+                              <th>Tên lớp học phần</th>
+                              <th>Số sinh viên</th>
+                              <th>Kì học</th>
+                          </tr>
                       </thead>
                       <tbody id = "tbody">
-                        @foreach($schedules as $sch)
-                          <tr>
-                            <th><input type ="checkbox"  name = <?php $a = str_replace(' ', '/', $sch->ID_Module_Class); echo $a; ?> value = <?php $a = str_replace(' ', '/', $sch->ID_Module_Class); echo $a; ?>></th>
-                            <td>{{$sch->ID_Module_Class}}</td>
-                            <td>{{$sch->Module_Class_Name}}</td>
-                            <td>{{$sch->Number_Reality}}</td>
-                            <td>{{$sch->School_Year}}</td>
+                          @foreach($schedules as $sch)
                             
-                          </tr>
-                        @endforeach
-                      </tbody>
-                    </table>
-                    
+                          <tr>
+                              <th>
+                                  <input type ="checkbox"  name = 
+                                      <?php $a = str_replace(' ', '/', $sch->ID_Module_Class); echo $a; ?> value = 
+                                      <?php $a = str_replace(' ', '/', $sch->ID_Module_Class); echo $a; ?>>
+                                  </th>
+                                  <td>{{$sch->ID_Module_Class}}</td>
+                                  <td>{{$sch->Module_Class_Name}}</td>
+                                  <td>{{$sch->Number_Reality}}</td>
+                                  <td>{{$sch->School_Year}}</td>
+                              </tr>
+                          @endforeach
+                        
+                          </tbody>
+                      </table>
+                  </form>
+                  <nav aria-label = "Page navigation example" id="pagination">
+                      {{ $schedules->links() }}
+                  </nav> 
                 </form>
 
-                <nav aria-label = "Page navigation example" id="pagination">
-                    {{ $schedules->render() }}
-                </nav> 
                 
                 <!--end form-->
 	             </div>
@@ -235,28 +237,32 @@
     $("#Filter").click(function() {
       var md = $("#select_md").val();
       var sy = $("#select_sy").val();
-      var dp = $("#select_dp").val();
+      //var dp = $("#select_dp").val();
       var dh = $("#select_DotHoc").val();
       var kind = $("#kind").val();
       var item = "";
-      alert(md+"//"+sy+"//"+dp+"//"+dh+"//"+kind);
+      //alert(md+"//"+sy+"//"+dp+"//"+dh+"//"+kind);
+      //alert(md+"//"+sy+"//"+dp+"//"+dh+"//"+kind);
       $.ajax({
         type: 'get',
         dataType: 'json',
         url: "{{url('/admin/assign/filter')}}",
-        data: 'md='+md+'&dp='+dp+'&sy='+sy+'&dh='+dh+'&kind='+kind,
+        data: 'md='+md+'&sy='+sy+'&dh='+dh+'&kind='+kind,
         
         success:function(response) {
-          console.log(response);
+          //console.log(response);
           $("#tbody").empty();
-          //$("#pagination").empty();
-          
-          var data = response.data;
-          $.each(data, function (index,val) { 
+          $("#pagination").empty();
+
+          $.each(response, function (index,val) { 
+              //console.log(val);
               if(val.Number_Reality == null ) val.Number_Reality = 0;
+              var tempt = (val.ID_Module_Class).split(" ");
+              var name = tempt[0]+'/'+tempt[1];
+              console.log(name);
               var item = `
                 <tr class="" >
-                  <th><input type ="checkbox"  name = <?php $a = str_replace(' ', '/', $sch->ID_Module_Class); echo $a; ?> value = <?php $a = str_replace(' ', '/', $sch->ID_Module_Class); echo $a; ?> ></th>
+                  <th><input type ="checkbox"  name = ${name} value = ${name} ></th>
                   <td>${val.ID_Module_Class}</td>
                   <td>${val.Module_Class_Name}</td>
                   <td>${val.Number_Reality}</td>
@@ -264,17 +270,17 @@
                 </tr>
                  `;
               $("#tbody").append(item);
+              //$("#pagination").append(item);
           });
         }
-
       //end ajax
       });
 
-        $('#pagination a').on('click', function(e){
-          e.preventDefault();
-          // var page = $(this).attr('href').split('page=')[1];
-          // getData(page,md,sy,dp,dh,kind);
-        });
+      // $('#pagination a').on('click', function(e){
+      //   e.preventDefault();
+      //   // var page = $(this).attr('href').split('page=')[1];
+      //   // getData(page,md,sy,dp,dh,kind);
+      // });
 
     });
 

@@ -16,7 +16,7 @@ class AssignController extends Controller
 {
     //
     public function index() {
-    	$schedules = DB::table('schedules')->select(DB::raw('distinct schedules.ID_Module_Class ,Module_Class_Name,Number_Reality,School_Year,ID_Teacher'))->join('module_class','module_class.ID_Module_Class', '=' , 'schedules.ID_Module_Class')->whereNULL('ID_Teacher')->where('schedules.ID_Module_Class','LIKE','MHT%')->orderBy('schedules.ID_Module_Class', 'asc')->paginate(10);
+    	$schedules = DB::table('schedules')->select(DB::raw('distinct schedules.ID_Module_Class ,Module_Class_Name,Number_Reality,School_Year,ID_Teacher'))->join('module_class','module_class.ID_Module_Class', '=' , 'schedules.ID_Module_Class')->whereNULL('ID_Teacher')->where('schedules.ID_Module_Class','LIKE','MHT%')->orderBy('schedules.ID_Module_Class', 'asc')->orderBy('schedules.ID_Module_Class','ASC')->paginate(10);
     
 
         $maAcc = Auth::user()->id;
@@ -37,9 +37,9 @@ class AssignController extends Controller
     }
 
     public function submit(Request $request) {
-    	dd($request->request);
+    	//dd($request->request);
     	$array = [] ;
-    	$magv = '0086';
+    	$magv = '';
         $Error = '';
         $numberRequest = 0 ;
 
@@ -65,14 +65,12 @@ class AssignController extends Controller
         //Hết lấy mã giảng viên
         $numberRequest = count($request->all());
     	foreach($request->request as  $key2=>$value) {
-
-
             if( $numberRequest >= count($request->all()) - 4) {
                 $numberRequest--;
                 continue;
             }
             $numberRequest--;
-            print_r($key2);
+           
 			$test1 = explode("/",$key2)[0];
 			$test2 = explode("/",$key2)[1];
 			$key2 = $test1." ".$test2;
@@ -93,27 +91,29 @@ class AssignController extends Controller
             }
             if($sch_gv->isEmpty()) {
                 DB::table('module_class')->where('ID_Module_Class', $key2)->update(['ID_Teacher' => $magv]);
-                
+                $numberInsertedValue++;
                 continue;
             }
             //Ket thuc kiem tra du lieu
             foreach($sch_gv as $value1) {
                 foreach ($sch as  $value2) {
-                    if(($value1->Day_Schedules == $value2->Day_Schedules and $value1->Shift_Schedules == $value2->Shift_Schedules) ){
-
-                        $Error = "Lỗi ".$value1->ID_Module_Class." Thời gian: ".$value1->Day_Schedules." Trùng với môn: ".$value2->ID_Module_Class;
-                        break 2;
+                    if(($value1->Day_Schedules == $value2->Day_Schedules and $value1->Shift_Schedules == $value2->Shift_Schedules) and $value1->Shift_Schedules != 0 ){
+                        $Error = "Lỗi ".$value1->ID_Module_Class." Thời gian: ".$value1->Day_Schedules.";Ca: ".$value1->Shift_Schedules." Trùng với môn: ".$value2->ID_Module_Class.";Ca: ".$value2->Shift_Schedules;
+                        break 3;
                     }
                 }
             }
             //Luu qua trinh phan giang
-			DB::table('module_class')->where('ID_Module_Class', $key2)->update(['ID_Teacher' => $magv]);
-            //Ket thuc luu qua trinh phan giang
+            
+            DB::table('module_class')->where('ID_Module_Class', $key2)->update(['ID_Teacher' => $magv]);
+        
             $numberInsertedValue++;
+            //Ket thuc luu qua trinh phan giang
+            
         }
 
         if($Error != '') {
-            return back()->withErrors($Error);
+            return back()->withErrors($Error)->with('thongbao','Thành công: '.$numberInsertedValue);
         }
         else {
             return back()->with('thongbao','Thành công: '.$numberInsertedValue);
@@ -163,10 +163,15 @@ class AssignController extends Controller
                     return $query->where('module_class.Module_Class_Name', 'like', '%.1%');
                 }
                 else if($kind == "TL") {
-                      return $query->where('module_class.Module_Class_Name', 'like', '%TL%');
+                    return $query->where('module_class.Module_Class_Name', 'like', '%TL%');
                 }
-                else return $query->where('module_class.Module_Class_Name', 'not like', '%.1%')->where('module_class.Module_Class_Name', 'not like', '%BT%')->where('module_class.Module_Class_Name', 'not like', '%TL%');
-            })->where('ID_Teacher','=',NULL)->paginate(10);
+                else if($kind == "DA"){
+                    return $query->where('module_class.Module_Class_Name', 'like', '%DA%');
+                }
+                else return $query->where('module_class.Module_Class_Name', 'not like', '%.1%')->where('module_class.Module_Class_Name', 'not like', '%BT%')->where('module_class.Module_Class_Name', 'not like', '%TL%')->where('module_class.Module_Class_Name', 'not like', '%DA%');
+            })->when($dh,function($query,$dp) {
+                if($dh > 1 ) return $query->where('module_class.ID_Module_Class','like','%.'.$t.' (%');
+            })->where('ID_Teacher','=',NULL)->where('ID_Module_Class','like','MHT%')->get();
             
             return Response::json($data);
         }
