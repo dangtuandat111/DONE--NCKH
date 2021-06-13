@@ -22,7 +22,7 @@
         <div class="col-12">
            <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Them bo loc</h3>
+                <h3 class="card-title">Thêm bộ lọc</h3>
 
                 <div class="card-tools">
                 </div>

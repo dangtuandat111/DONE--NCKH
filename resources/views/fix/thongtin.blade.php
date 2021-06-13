@@ -98,9 +98,9 @@
           <div class="card card-primary">
             <div class="modal-header">
               <h4 class="modal-title" id = "tittle">Thay đổi giờ giảng</h3>
-              <button type = "button" class = "close" data-dismiss = "modal" aria-label = "Close">
+             <!--  <button type = "button" class = "close" data-dismiss = "modal" aria-label = "Close">
                 <span aria-hidden = "true">&times;</i></span>
-              </button>
+              </button> -->
             </div>
 
             <div class="modal-body">
@@ -132,13 +132,22 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="inputTeacher">Bộ môn</label>
-                  <select class="form-control custom-select" name = "inputTeacher" id = "inputTeacher">
-                    <option selected disabled>Chọn giảng viên</option>
-                      @foreach($teacher as $tc)
-                        <option value="{{$tc->ID_Teacher}}">{{$tc->ID_Teacher}}</option>
-                      @endforeach
-                  </select>
+                 <!--  <div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="Option_GV" value = "Value_GV1" id = "radioTeacher">
+                      <label class="form-check-label">Chọn giảng viên khác</label>
+                    </div>
+                  </div> -->
+                  
+                  <div  id = "inputTeacher">
+                    <label for="inputTeacher">Giảng viên</label>
+                    <select class="form-control custom-select" name = "inputTeacher" >
+                      <option selected disabled>Chọn giảng viên</option>
+                        @foreach($teacher as $tc)
+                          <option value="{{$tc->ID_Teacher}}">{{$tc->Name_Teacher}}</option>
+                        @endforeach
+                    </select>
+                  </div>
                 </div>
 
                 <div class="form-group">
@@ -158,6 +167,7 @@
   function showPopUP($id,$day,$sch) {
     console.log("dayla");
     console.log($id);
+    //$("#inputTeacher").remove();
     var sch = $sch;
     console.log(sch);
     var item = `
@@ -177,8 +187,12 @@
   }
   
   $(document).ready(function() {
-    $("#editModule_Class").click(function() {
-      // $('#editModule_Class').hide();
+    $("#inputTeacher").click(function() {
+      console.log(1);
+      //$('#editModule_Class').remove();
+      $("#inputTeacher").append();
+      //$("input:radio").removeAttr("checked");
+      
     });
     // $("#ChangeForm").submit(function() {
     //   var date = $("#inputDate").val();
