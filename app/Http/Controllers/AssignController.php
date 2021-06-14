@@ -16,12 +16,18 @@ class AssignController extends Controller
 {
     //
     public function index() {
-    	$schedules = DB::table('schedules')->select(DB::raw('distinct schedules.ID_Module_Class ,Module_Class_Name,Number_Reality,School_Year,ID_Teacher'))->join('module_class','module_class.ID_Module_Class', '=' , 'schedules.ID_Module_Class')->whereNULL('ID_Teacher')->where('schedules.ID_Module_Class','LIKE','MHT%')->orderBy('schedules.ID_Module_Class', 'asc')->orderBy('schedules.ID_Module_Class','ASC')->paginate(10);
+    	// $schedules = DB::table('schedules')->select(DB::raw('distinct schedules.ID_Module_Class ,Module_Class_Name,Number_Reality,School_Year,ID_Teacher'))->join('module_class','module_class.ID_Module_Class', '=' , 'schedules.ID_Module_Class')->whereNULL('ID_Teacher')->where('schedules.ID_Module_Class','LIKE','MHT%')->orderBy('schedules.ID_Module_Class', 'asc')->orderBy('schedules.ID_Module_Class','ASC')->paginate(10);
+        $schedules = DB::table('module_class')->
+            join('teacher','teacher.ID_Teacher','=','module_class.ID_Teacher')->
+            where('ID_Module_Class','LIKE','MHT%')->
+            whereNULL('module_class.ID_Teacher')-> 
+            orderBy('ID_Module_Class', 'asc')->
+            paginate(10);
     
 
         $maAcc = Auth::user()->id;
         
-        $maBM = DB::table('department')->where('ID_Account','=',$maAcc)->get();
+        $maBM = DB::table('department')->where('ID_Account','=',$maAcc)->orderBy('Department_Name','asc')->get();
         
         $teacher = DB::table('teacher')->where('Is_Delete','=','0')->where('ID_Department','=',$maBM[0]->ID_Department)->get();
 
@@ -178,7 +184,13 @@ class AssignController extends Controller
     }
 
     public function index2() {
-        $schedules = DB::table('schedules')->select(DB::raw(' distinct schedules.ID_Module_Class ,Module_Class_Name,Number_Reality,School_Year,ID_Teacher'))->join('module_class','module_class.ID_Module_Class', '=' , 'schedules.ID_Module_Class')->where('ID_Teacher','<>',null)->paginate(10);
+        $schedules = DB::table('module_class')->
+            join('teacher','teacher.ID_Teacher','=','module_class.ID_Teacher')->
+            where('ID_Module_Class','LIKE','MHT%')->
+            orderBy('ID_Module_Class', 'asc')->
+            where('module_class.ID_Teacher','<>',null)->
+            paginate(10);
+
         $school = DB::select(DB::raw("SELECT DISTINCT School_Year FROM module_class "));
         $departments = DB::select(DB::raw("SELECT ID_Department,Department_Name FROM department"));
         $module = DB::select(DB::raw("SELECT DISTINCT ID_Module,Module_Name FROM module "));
@@ -211,6 +223,6 @@ class AssignController extends Controller
 
     public function deleteThongTin($id) {
         DB::table('module_class')->where('ID_Module_Class' , $id)->update(['ID_Teacher' => null]);;
-        return redirect('admin/assign/list')->with('thongbao', 'Xóa phân giảng thành công');
+        return back()->with('thongbao', 'Xóa phân giảng thành công');
     }
 }
