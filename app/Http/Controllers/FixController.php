@@ -149,8 +149,8 @@ class FixController extends Controller
     		// echo "<br />";
     		$sch = DB::table('schedules')->where('ID_Module_Class','=',$module_class->ID_Module_Class)->get();
     		foreach ($sch as $key) {
-    			print_r($key);
-    			echo "<br />";
+    			// print_r($key);
+    			// echo "<br />";
     			if($key->Day_Schedules == $inputDate and $key->Shift_Schedules == $inputShift) {
     				return back()->withErrors('Lỗi: Trùng lịch dạy: {'.$key->Day_Schedules.", ".$key->Shift_Schedules."}");
     			}

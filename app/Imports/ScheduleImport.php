@@ -45,7 +45,7 @@ class ScheduleImport implements ToCollection
     public $numberSuccess = 0;
     public function collection(Collection $collection)
     {
-        dd($collection);
+        //dd($collection);
     	$i = 0;
     	$e = 0;
         $dong = 0 ;
@@ -88,7 +88,7 @@ class ScheduleImport implements ToCollection
         if($isError == 1) {
             return back()->withErrors($status.": Dòng ".$dong)->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess);
         }
-    	//else return back()->with('thongbao','Thành công: '.$this->numberSuccess);
+    	else return back()->with('thongbao','Thành công: '.$this->numberSuccess);
     }
 
     public function dataChange(Collection $row,$dong){
@@ -346,9 +346,9 @@ class ScheduleImport implements ToCollection
 			
             //Kiểm tra lịch trình
 			//$sch = new schedules();
-            echo "<br />".($ID_Module_Class_2);
+            //echo "<br />".($ID_Module_Class_2);
             $dateBegin = Carbon::parse($dateBegin)->format('Y-m-d');
-            echo "<br />".$dateBegin;
+            //echo "<br />".$dateBegin;
             $nb_sch = DB::table('schedules')->where('ID_Module_Class','=', $ID_Module_Class_2)->where('Shift_Schedules','=',$ca)->where('Day_Schedules','=', $dateBegin)->count();
             echo "<br />".($nb_sch);
             //Lịch trình đã trùng cả lớp học phần, ngày học, ca học thì bỏ qua

@@ -5,6 +5,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Hệ thống hỗ trợ giảng dạy  - @yield('title')</title>
+
+  <style>
+  font-size: 14px;
+  </style>
    <meta name="csrf-token" content="{{ csrf_token() }}">
   
 

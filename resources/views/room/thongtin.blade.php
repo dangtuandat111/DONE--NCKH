@@ -79,7 +79,7 @@
                     <td>{{$fix_index->Day_Fix}}</td>
                     <td>{{$fix_index->ID_Teacher_Option}}</td>
                     <td>
-                    	<select class="form-control custom-select" name = "inputID_Department" >
+                    	<select class="form-control custom-select" name = <?php echo "inputID_Department_".$fix_index->ID_Schedules ?> >
 		                  <option selected disabled >Chọn phòng học</option>
 			                	@foreach($room as $rm)
 			                		<option value="{{$rm->ID_Room}}" >{{$rm->ID_Room}}</option>

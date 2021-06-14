@@ -4,7 +4,7 @@ use Carbon\Carbon;
 @extends('admin.master')
 @section('body')
 
-<div class="wrapper">
+<div class="wrapper"  style = 'font-size: 14px;'>
 
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -25,8 +25,7 @@ use Carbon\Carbon;
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{ url('/home') }}" class="brand-link">
-     
-      <span class="brand-text font-weight-light">Hệ thống hỗ trợ giảng dạy</span>
+      <span class="brand-text font-weight-light " style = "color: #007bff">Hệ thống hỗ trợ giảng dạy</span>
     </a>
 
     <!-- Sidebar -->
@@ -57,7 +56,7 @@ use Carbon\Carbon;
       <!-- Sidebar Menu -->
 
         <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" >
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
 
