@@ -44,4 +44,10 @@ class ExportController extends Controller
 	        'Content-Disposition' => 'inline; filename="' . $filename . '"'
 	    ]);
     }
+
+    public function postThongKe() {
+    	Excel::create('Filename', function($excel) {
+
+		})->export('xlsx');
+    }
 }

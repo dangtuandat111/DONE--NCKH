@@ -50,7 +50,7 @@ class teacherImport implements ToCollection
 	    	}
 
 	    	try {
-	    		echo "da vao";
+	    		//echo "da vao";
 	    		DB::table('teacher')->insert([
 	    			'ID_Teacher' => $id_teacher,
 	    			'Name_Teacher' => $name_teacher,
@@ -63,14 +63,14 @@ class teacherImport implements ToCollection
 	    			'Is_Delete' => 0,
 	    		]);
 	    		$this->numberInsertedValue ++;
-	    		echo "da ra";
+	    		//echo "da ra";
 	    	}catch (Exception $e) {
 	    		$error = 'Lỗi khi thêm giảng viên';
 	    		break;
 	    	}
 
     	}
-    	if(!empty($var)) {
+    	if(!empty($error)) {
             return back()->withErrors($error)->with('thongbao','Số trường thêm thành công: '.$this->numberInsertedValue);
         }
     	else return back()->with('thongbao','Số trường thêm thành công: '.$this->numberInsertedValue);

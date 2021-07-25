@@ -56,7 +56,7 @@ $(document).ready(function() {
       $.ajax({
           type: 'get',
           dataType: 'json',
-          url: "{{url('/testCalendar/')}}",
+          url: "{{url('/calendar/')}}",
           success: function(response) {
               console.log(response);
               newEvents = new Array();
@@ -67,8 +67,8 @@ $(document).ready(function() {
                       start: new Date(response[i].start),
                       end: new Date(response[i].end),
                       allDay: false,
-                      backgroundColor: "#00a65a",
-                      borderColor: "#00a65a",
+                      backgroundColor: '#ffffff',
+                      borderColor: "#007bff",
                   }
                   events.push(the_event);
               }

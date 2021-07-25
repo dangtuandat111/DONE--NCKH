@@ -12,13 +12,14 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Auth;
 
 
+
 class AssignController extends Controller
 {
     //
     public function index() {
     	// $schedules = DB::table('schedules')->select(DB::raw('distinct schedules.ID_Module_Class ,Module_Class_Name,Number_Reality,School_Year,ID_Teacher'))->join('module_class','module_class.ID_Module_Class', '=' , 'schedules.ID_Module_Class')->whereNULL('ID_Teacher')->where('schedules.ID_Module_Class','LIKE','MHT%')->orderBy('schedules.ID_Module_Class', 'asc')->orderBy('schedules.ID_Module_Class','ASC')->paginate(10);
         $schedules = DB::table('module_class')->
-            join('teacher','teacher.ID_Teacher','=','module_class.ID_Teacher')->
+            //join('teacher','teacher.ID_Teacher','=','module_class.ID_Teacher')->
             where('ID_Module_Class','LIKE','MHT%')->
             whereNULL('module_class.ID_Teacher')-> 
             orderBy('ID_Module_Class', 'asc')->
@@ -37,8 +38,7 @@ class AssignController extends Controller
         $departments = DB::select(DB::raw("SELECT ID_Department,Department_Name FROM department"));
         $module = DB::select(DB::raw("SELECT DISTINCT ID_Module,Module_Name FROM module where ID_Module like 'MHT%' order By Module_Name ASC"));
         
-
-        //dd($schedules);
+        
         return view ('assign.assign', ['schedules' => $schedules,'teacher' => $teacher,'school' => $school, 'module' => $module,'departments' => $departments, 'teacher_All' => $teacher_All] );
     }
 

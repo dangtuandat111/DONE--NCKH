@@ -18,6 +18,8 @@ use Validator;
 use Excel;
 use Session;
 use DB;
+use Maatwebsite\Excel\Concerns\WithConditionalSheets;
+
 
 class importController extends Controller
 {
@@ -69,6 +71,12 @@ class importController extends Controller
     }
 
     public function postModules_Class(Request $request) {
+        //dd($request);
+
+        if(!$request->hasFile('lophocphan')) {
+            return back()->withError('Lỗi file');
+        }
+
     	$import = new ScheduleImport();
     	
         $rules = [
@@ -83,9 +91,22 @@ class importController extends Controller
 
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
-            return back()->withError($validator);
+            return back()->withErrors($validator);
 
         }
+
+        try {
+            $import->onlySheets('CPM','MHT','KHM','CNT');
+        }catch(SheetNotFoundException $e) {
+            return back()->withErrors($e.messages());
+        }
+
+        try {
+            $import->onlySheets('CPM','MHT','KHM');
+        }catch(SheetNotFoundException $e) {
+            return back()->withErrors($e.messages());
+        }
+        //dd($import);
         
         Excel::import($import,$request->lophocphan);
         return back();

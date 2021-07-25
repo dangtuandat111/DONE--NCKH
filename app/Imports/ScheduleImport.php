@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Concerns\WithConditionalSheets;
 use Carbon\Carbon;
 use DateTime;
 use DB;
@@ -19,8 +20,9 @@ use App\models\rooms;
 use Illuminate\Support\Str;
 
 
-class ScheduleImport implements ToCollection
+class ScheduleImport implements ToCollection,WithMultipleSheets
 {
+    use WithConditionalSheets; 
     /**
     * @param Collection $collection
     */
@@ -43,18 +45,46 @@ class ScheduleImport implements ToCollection
     //Yêu cầu chỉ đọc file excel với 1 sheet
     //Hiển thị số dòng thêm thành công
     public $numberSuccess = 0;
+    public $numberBlank = 0 ;
+
+    public $arraySchedules = [];
+    public $arrayModuleClass = [];
+    public $sheet = 1;
+
+   //xảy ra lỗi khi không đủ file
+    public function conditionalSheets(): array
+    {
+        return [
+            'CPM' =>  new ScheduleImport(),
+            'KHM' =>  new ScheduleImport(),
+            'MHT' =>  new ScheduleImport(),
+            'CNT' =>  new ScheduleImport(),
+        ];
+    }
+
+    public function sheets(): array
+    {
+        return [
+           //0 =>  new newImport(),
+           new ScheduleImport(),
+           new ScheduleImport(),
+        ];
+    }
+
     public function collection(Collection $collection)
     {
-        //dd($collection);
+       
     	$i = 0;
     	$e = 0;
         $dong = 0 ;
         $isError = 0;
         $status = '';
+
         //Bắt đầu đọc file khi thấy STT
         //Cách 1 dòng và bắt đầu đọc
         //Kết thúc đọc file khi gặp dòng toàn là khoảng trống
     	foreach($collection as $row) {
+            
             $dong++;
     		if($i == 2) {
     			$dem = 0;
@@ -85,13 +115,28 @@ class ScheduleImport implements ToCollection
     		}
     		
     	}
+        
+        $this->sheet ++;
         if($isError == 1) {
-            return back()->withErrors($status.": Dòng ".$dong)->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess);
+            return back()->withErrors($status.": Dòng ".$dong." - Sheet: ".($this->sheet-1))->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess.' Số học phần chưa có ngày học: '.$this->numberBlank);
         }
-    	else return back()->with('thongbao','Thành công: '.$this->numberSuccess);
+    	else {
+            // echo $this->numberBlank."<br >";
+            // echo $this->numberSuccess;
+            // echo '<pre>'; print_r($this->arraySchedules); echo '</pre>'; 
+            // echo '<pre>'; print_r($this->arrayModuleClass); echo '</pre>';  echo "DHet";
+
+            DB::table('module_class')->insert($this->arrayModuleClass);
+            DB::table('schedules')->insert($this->arraySchedules);
+            
+            return back()->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess.' Số học phần chưa có ngày học: '.$this->numberBlank);
+        }
     }
 
     public function dataChange(Collection $row,$dong){
+       
+        
+        $arrayB = [];
         //Lay toan bo thong tin tai dong
     	$mahp = $row[2];
     	$sotinchi = $row[3];
@@ -176,37 +221,66 @@ class ScheduleImport implements ToCollection
         //Kiem tra tu 0 - 6 
         //Nếu ngày tạo không có tiết thì đến ngày mới và ngày (thứ) +1
         //Đã đọc trường hợp 2 ca học trong cùng 1 khoảng thời gian
-		$ngay = 2; 
-		$ca = 0;
+		$ngay = 0; 
+		$ca = NULL;
+
+                    
+        // if ($tiet == "1,2,3") {
+        //     $ca = 1;    
+        // }
+        // if ($tiet == "4,5,6") {
+        //     $ca = 2;    
+        // }
+        // if ($tiet == "7,8,9") {
+        //     $ca = 3;    
+        // }
+        // if ($tiet == "10,11,12") {
+        //     $ca = 4;    
+        // }
+        // if ($tiet == "13,14,15") {
+        //     $ca = 5;    
+        // }
+        // if ($tiet == "16,17,18") {
+        //     $ca = 6;    
+        // }
+        // break;
         
 		foreach($thu as $ptthu) {
 			foreach($ptthu as $tiet){
 				if($tiet != null) {
-					if ($tiet == "1,2,3") {
-						$ca = 1;	
-					}
-					if ($tiet == "4,5,6") {
-						$ca = 2;	
-					}
-					if ($tiet == "7,8,9") {
-						$ca = 3;	
-					}
-					if ($tiet == "10,11,12") {
-						$ca = 4;	
-					}
-					if ($tiet == "13,14,15") {
-						$ca = 5;	
-					}
-					if ($tiet == "16,17,18") {
-						$ca = 6;	
-					}
-					break;
+                    if ($tiet == "1,2,3") {
+                        $ca = 1;    
+                    }
+                    elseif ($tiet == "4,5,6") {
+                        $ca = 2;    
+                    }
+                    elseif ($tiet == "7,8,9") {
+                        $ca = 3;    
+                    }
+                    elseif ($tiet == "10,11,12") {
+                        $ca = 4;    
+                    }
+                    elseif ($tiet == "13,14,15,16") {
+                        $ca = 5;    
+                    }
+                    elseif ($tiet == "13,14,15") {
+                        $ca = 5;    
+                    }
+                    elseif ($tiet == "13,14") {
+                        $ca = 5;    
+                    }
+                    elseif ($tiet == "15,16") {
+                        $ca = 5;    
+                    }
+                    else return 'Lỗi ca học: ';
+                    break 2;
 				}
 				else {
 					$ngay = $ngay+1;
 				}
 			}
 		}
+
         //Het doc ca hoc và ngày học
 
         //Doc phong hoc
@@ -232,25 +306,50 @@ class ScheduleImport implements ToCollection
         //Hết kiểm tra phòng học
 
         //Ngày bắt đầu học và ngày kêt thúc học
-        $dateBegin = $startTime->addDays($ngay-2);
+        //Kiem tra xem ngay hoc co bi rong khong
+        $dateBegin = $startTime->addDays($ngay);
         $dateEnd = $endTime;
         //Hết ngày bắt đầu học và ngày kêt thúc học
 
         //Đọc tên lớp học phần
         //Tên học phần-Kì học-Năm học 'Loại học phần'
+        //dd($tenhp);
         try{
-            $tenmon = explode("-",$tenhp)[0];
-            $kihoc = explode("-",$tenhp)[1];
-            $nam = explode("-",$tenhp)[2];
+            $check = explode("-",$tenhp);
+            if(count($check) == 4) {
+                $tenmon = explode("-",$tenhp)[0];
+                $kihoc = explode("-",$tenhp)[1];
+                $nam = explode("-",$tenhp)[2];
+                $dothoc = explode("-",$tenhp)[3];
+                //dd($dothoc);
+                $kieukt = explode(" ",$dothoc)[1];
+                $nam = explode(" ",$dothoc)[0];
 
-            $kieukt = explode(" ",$nam)[1];
-            $nam = explode(" ",$nam)[0];
-            //Chưa kiểm tra đọt học
-            //$contains = 
-            if(Str::contains($nam,'.')) {
-                $dothoc = explode(" ",$nam)[1];
-                $nam = explode(" ",$nam)[0];
+                //Chưa kiểm tra đọt học
+                //$contains = 
+                // if(Str::contains($nam,'.')) {
+                //     $dothoc = explode(" ",$nam)[1];
+                //     $nam = explode(" ",$nam)[0];
+                // }
             }
+            elseif (count($check) == 3){
+                $tenmon = explode("-",$tenhp)[0];
+                $kihoc = explode("-",$tenhp)[1];
+                $nam = explode("-",$tenhp)[2];
+                //dd($nam);
+
+                $kieukt = explode(" ",$nam)[1];
+                $nam = explode(" ",$nam)[0];
+
+                //Chưa kiểm tra đọt học
+                //$contains = 
+                // if(Str::contains($nam,'.')) {
+                //     $dothoc = explode(" ",$nam)[1];
+                //     $nam = explode(" ",$nam)[0];
+                // }
+            }
+            else return 'Lỗi tên học phần '.$tenhp;
+            
         }catch(Exception $e) {
             return 'Lỗi tên học phần: '.$tenhp;
         }
@@ -302,7 +401,7 @@ class ScheduleImport implements ToCollection
         $hocphan = DB::table('module')->where('ID_Module','=', $ID_Module)->get();
         //dd($hocphan);
         if($hocphan->isEmpty()) {
-            return 'Không tồn tại mã học phần';
+            return 'Không tồn tại mã học phần '.$ID_Module;
         }
         //Kết thúc kiểm tra mã lớp học phần
 
@@ -325,6 +424,14 @@ class ScheduleImport implements ToCollection
                     'ID_Module' => $ID_Module,
                     ]
                 );
+                // array_push($this->arrayModuleClass, [
+                //     'ID_Module_Class' => $ID_Module_Class,
+                //     'Module_Class_Name' => $Module_Class_Name,
+                //     'Number_Plan' => $Number_Plan,
+                //     'Number_Reality' => $Number_Reality,
+                //     'School_Year' => $School_Year,
+                //     'ID_Module' => $ID_Module,
+                // ]);
 
                 $this->numberSuccess++;
                 // echo "<br />"."Dữ liệu lưu bảng module_class";
@@ -341,6 +448,13 @@ class ScheduleImport implements ToCollection
         }
         //Hết lưu dữ liệu lớp học phần
 
+        //Kiểm tra $ngày > 7  thì tức là chưa có cụ thể ngày học
+        if($ngay > 5 ) {
+            $this->numberBlank++;
+            return 'Thành công';
+        }
+        //Hết kiểm tra ngày
+
         //Lưu trữ dữ liệu schedules
 		while($dateEnd >= $dateBegin ) {
 			
@@ -350,33 +464,50 @@ class ScheduleImport implements ToCollection
             $dateBegin = Carbon::parse($dateBegin)->format('Y-m-d');
             //echo "<br />".$dateBegin;
             $nb_sch = DB::table('schedules')->where('ID_Module_Class','=', $ID_Module_Class_2)->where('Shift_Schedules','=',$ca)->where('Day_Schedules','=', $dateBegin)->count();
-            echo "<br />".($nb_sch);
+            //echo "<br />".($nb_sch);
             //Lịch trình đã trùng cả lớp học phần, ngày học, ca học thì bỏ qua
             if($nb_sch > 0) {
                 // return 'Đã tồn tại lịch trình của lớp học phần: '.$ID_Module_Class.'-'.$dateBegin.'-'.'Day_Schedules';
                 $dateBegin = $startTime->addWeeks(1);
+                
                 continue;
             }
             //Không trùng thì insert
             //Kiểm tra xem có thông tin phòng học hay không
 
             if(is_null($phong)) {
-                DB::table('schedules')->insert(
-                [   'ID_Module_Class' => $ID_Module_Class_2,
+                // DB::table('schedules')->insert(
+                // [   'ID_Module_Class' => $ID_Module_Class_2,
+                //     'Shift_Schedules' => $ca,
+                //     'Day_Schedules' => $dateBegin,
+                //     'Number_Student' => NULL ]
+                // );
+                array_push($this->arraySchedules, [
+                    'ID_Module_Class' => $ID_Module_Class_2,
+                    'ID_Room' => NULL,
                     'Shift_Schedules' => $ca,
                     'Day_Schedules' => $dateBegin,
-                    'Number_Student' => NULL ]
-                );
-                 $this->numberSuccess++;
+                    'Number_Student' => NULL
+                ]);
+                
+                $this->numberSuccess++;
             }
             else {
-                DB::table('schedules')->insert(
-                [   'ID_Module_Class' => $ID_Module_Class_2,
+                // DB::table('schedules')->insert(
+                // [   'ID_Module_Class' => $ID_Module_Class_2,
+                //     'ID_Room' => $phong,
+                //     'Shift_Schedules' => $ca,
+                //     'Day_Schedules' => $dateBegin,
+                //     'Number_Student' => NULL ]
+                // );
+                array_push($this->arraySchedules, [
+                    'ID_Module_Class' => $ID_Module_Class_2,
                     'ID_Room' => $phong,
                     'Shift_Schedules' => $ca,
                     'Day_Schedules' => $dateBegin,
-                    'Number_Student' => NULL ]
-                );
+                    'Number_Student' => NULL,
+                ]);
+               
                 $this->numberSuccess++;
             }
 
@@ -388,8 +519,8 @@ class ScheduleImport implements ToCollection
    //          echo "<br />".$dangki."<hr>";
 			
 			$dateBegin = $startTime->addWeeks(1);
+           
 		}
-        // echo "<br />"."<hr>";
         return 'Thành công';
     }
 
