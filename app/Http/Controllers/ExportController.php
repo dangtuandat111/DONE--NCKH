@@ -12,15 +12,12 @@ class ExportController extends Controller
     public function postTeacher() {
     	$filename = "MAU_THEM_GIANGVIEN.xlsx";
 	    	 // Get path from storage directory
-	    $path = base_path('File_Export\\'.$filename);
+	    $path = app_path('File_Export\\'.$filename);
         //$path = app_path('File_Export\\'.$filename);
         
         //dd($path);
 	    // Download file with custom headers
-	    return response()->download($path, $filename, [
-	        'Content-Type' => 'application/vnd.ms-excel',
-	        'Content-Disposition' => 'inline; filename="' . $filename . '"'
-	    ]);
+	    return response()->download($path, $filename);
     }
 
     
