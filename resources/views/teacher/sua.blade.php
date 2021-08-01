@@ -61,9 +61,9 @@
 	                <label for="inputPermission">Phân Quyền</label>
 	                <select class="form-control custom-select" name = "inputPermission" >
 	                  <option selected disabled >Chọn Phân quyền</option>
-		                	<option>Admin</option>
-		                	<option>Giảng Viên</option>
-		                	<option>Phòng đào tạo</option>
+		                	
+		                	<option value = 'Giảng viên'>Giảng Viên</option>
+		                	
 
 	                </select>
 	              </div>
