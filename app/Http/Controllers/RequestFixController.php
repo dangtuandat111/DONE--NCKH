@@ -58,8 +58,7 @@ class RequestFixController extends Controller
         // if($status != 'Thành công') {
         //     return back()->withError($status);
         // }
-    	//else
-         return back()->with('thongbao','Từ chối thành công');
+    	 return back()->with('thongbao','Từ chối thành công');
     }
 
     public function sendMail($id,$m) {
