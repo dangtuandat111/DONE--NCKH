@@ -5,19 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Excel;
 use App\Exports\FileExport;
+use App\Exports\GiangVienExport;
 
 class ExportController extends Controller
 {
     //
     public function postTeacher() {
-    	$filename = "MAU_THEM_GIANGVIEN.xlsx";
-	    	 // Get path from storage directory
-	    $path = ($filename);
-        //$path = app_path('File_Export\\'.$filename);
-        
-        //dd($path);
-	    // Download file with custom headers
-	    return response()->download($path, $filename);
+    	$export = new GiangVienExport();
+
+        return Excel::download($export, 'giangvien.xlsx');
     }
 
     
@@ -25,6 +21,7 @@ class ExportController extends Controller
     public function postThongKe(Request $request) {
     	$i = 0 ; 
     	$month = 0;
+        //Kiem tra co month
     	foreach($request->request as $data) {
     		if($i==1) {$month = $data; break;}
     		$i++;

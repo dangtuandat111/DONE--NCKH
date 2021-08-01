@@ -1,31 +1,24 @@
 <?php
 
 namespace App\Exports;
-use App\models\teacher;
-use DB;
-use Response;
+
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 
-
-class GiangVienExport implements FromCollection{
+class GiangVienExport implements FromCollection
+{
     /**
     * @return \Illuminate\Support\Collection
     */
-    public function postTeacher() {
-        $file = public_path();
-        $file_path = "../".$file."File_Export/MAU_THEM_GIANG_VIEN.xlsx";
-
-        return Response::downloand($file,"MAU_THEM_GIANG_VIEN.xlsx");
-    }
-
     public function collection()
     {
-        //
-        $file = public_path();
-        $file_path = "../".$file."File_Export/MAU_THEM_GIANG_VIEN.xlsx";
-
-        return Response::downloand($file,"MAU_THEM_GIANG_VIEN.xlsx");
+    	$collection = new Collection();
+         $head = ['ID_Teacher','Name_Teacher','DoB_Teacher','Phone_Teacher','University_Teacher_Degree','Permission','User_Name_Teacher','Password_Teacher','',
+         		'Email_Teacher','ID_Department','IS_Delete'];
+         $collection->push($head);
+         return $collection;
     }
-
 }
+
     
+
