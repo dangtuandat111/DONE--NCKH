@@ -12,7 +12,7 @@ class ExportController extends Controller
     public function postTeacher() {
     	$filename = "MAU_THEM_GIANGVIEN.xlsx";
 	    	 // Get path from storage directory
-	    $path = base_path($filename);
+	    $path = ($filename);
         //$path = app_path('File_Export\\'.$filename);
         
         //dd($path);
