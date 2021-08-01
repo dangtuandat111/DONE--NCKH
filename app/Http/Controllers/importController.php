@@ -15,6 +15,7 @@ use App\Imports\ScheduleImport;
 use App\Imports\teacherImport;
 use Validator;
 
+use Maatwebsite\Excel\Exceptions;
 use Excel;
 use Session;
 use DB;
@@ -94,19 +95,7 @@ class importController extends Controller
             return back()->withErrors($validator);
 
         }
-
-        try {
-            $import->onlySheets('CPM','MHT','KHM','CNT');
-        }catch(SheetNotFoundException $e) {
-            return back()->withErrors($e.messages());
-        }
-
-        try {
-            $import->onlySheets('CPM','MHT','KHM');
-        }catch(SheetNotFoundException $e) {
-            return back()->withErrors($e.messages());
-        }
-        //dd($import);
+        $import->onlySheets('CPM','MHT','KHM','CNT');
         
         Excel::import($import,$request->lophocphan);
         return back();

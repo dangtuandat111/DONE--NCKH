@@ -18,10 +18,10 @@ class HocPhanController extends Controller
 	//Get module data
     public static function getThongTin() {
     	
-		$modules = DB::table('module')->Paginate(10);
+		$modules = DB::table('module')->where('ID_Module','like','MHT%')->Paginate(10);
 		$credits = DB::select(DB::raw("SELECT DISTINCT Credit FROM module ORDER BY Credit asc"));
 		$departments = DB::select(DB::raw("SELECT ID_Department,Department_Name FROM department"));
-		$module = DB::select(DB::raw("SELECT DISTINCT ID_Module,Module_Name FROM module "));
+		$module = DB::select(DB::raw("SELECT DISTINCT ID_Module,Module_Name FROM module where ID_Department = 'MHT' "));
 
 		return view ('modules.thongtin', ['modules' => $modules,'credits' => $credits,
 											'module' => $module,'departments' => $departments] );
@@ -174,7 +174,7 @@ class HocPhanController extends Controller
 				'id_department' => $request->inputID_department]
 
 			);
-	    }catch(QueryException $e) {
+	    }catch(\Exception $e) {
 	    	return redirect('admin/hocphan/thongtin')->withErrors($e->getMessage());
 	    }
 		
@@ -192,18 +192,16 @@ class HocPhanController extends Controller
 		if(request()->ajax()) {
 
 	        $md = (!empty($_GET["md"])) ? ($_GET["md"]) : ('');
-	        $dp = (!empty($_GET["dp"])) ? ($_GET["dp"]) : ('');
+	        //$dp = (!empty($_GET["dp"])) ? ($_GET["dp"]) : ('');
 	        $cd = (!empty($_GET["cd"])) ? ($_GET["cd"]) : ('');
 
         	$data = DB::table('module')->when($md,function($query,$md) {
         		return $query->where('ID_Module',$md);
         	})->when($cd,function($query,$cd) {
         		return $query->where('Credit',$cd);
-        	})->when($dp,function($query,$dp) {
-        		return $query->where('ID_Department',$dp);
-        	})->get();
+        	})->where('ID_Department','=','MHT')->Paginate(10);
 			
-			return Response::json($data);
+			return view('modules.moduleView')->with(['modules' => $data]);
 		}
 	}
 

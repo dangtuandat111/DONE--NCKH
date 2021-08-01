@@ -12,12 +12,10 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Auth;
 
 
-
 class AssignController extends Controller
 {
     //
     public function index() {
-    	// $schedules = DB::table('schedules')->select(DB::raw('distinct schedules.ID_Module_Class ,Module_Class_Name,Number_Reality,School_Year,ID_Teacher'))->join('module_class','module_class.ID_Module_Class', '=' , 'schedules.ID_Module_Class')->whereNULL('ID_Teacher')->where('schedules.ID_Module_Class','LIKE','MHT%')->orderBy('schedules.ID_Module_Class', 'asc')->orderBy('schedules.ID_Module_Class','ASC')->paginate(10);
         $schedules = DB::table('module_class')->
             //join('teacher','teacher.ID_Teacher','=','module_class.ID_Teacher')->
             where('ID_Module_Class','LIKE','MHT%')->
@@ -39,28 +37,16 @@ class AssignController extends Controller
         $module = DB::select(DB::raw("SELECT DISTINCT ID_Module,Module_Name FROM module where ID_Module like 'MHT%' order By Module_Name ASC"));
         
         
-        return view ('assign.assign', ['schedules' => $schedules,'teacher' => $teacher,'school' => $school, 'module' => $module,'departments' => $departments, 'teacher_All' => $teacher_All] );
+        return view ('assign.assign', ['schedules' => $schedules,'teacher' => $teacher,'school' => $school, 'module' => $module,'departments' => $departments, 'teacher_All' => $teacher_All] )->render();
     }
 
     public function submit(Request $request) {
-    	//dd($request->request);
-    	$array = [] ;
-    	$magv = '';
-        $Error = '';
-        $numberRequest = 0 ;
+    	
+    	$array = [] ; $magv = ''; $Error = ''; $numberRequest = 0 ;
 
         //Dem so truong da them thanh cong
         $numberInsertedValue = 0;
-        /*Data có dạng 
-        "_token" => "BlZuo0F7yQVQgZtbEivpJ5WBTqAecdShW9uVzqmK"
-        "Option_GV" => "Value_GV2"
-        "select_gv" => null
-        "select_bm" => "MHT"
-        "select_gv_2" => "0086"
-        "ANHB1_4-1-20/(N15_BT1)" => "ANHB1.4-1-20/(N15.BT1)"
-        "ANHB1_4-1-20/(N16)" => "ANHB1.4-1-20/(N16)"
-        "ANHB1_4-1-20/(N16_BT1)" => "ANHB1.4-1-20/(N16.BT1)"
-        */
+       
         //Lấy mã giảng viên
         if(is_null($request->input('select_gv'))) {
             $magv = $request->input('select_gv_2');
@@ -69,6 +55,7 @@ class AssignController extends Controller
             $magv = $request->input('select_gv');
         }
         //Hết lấy mã giảng viên
+        
         $numberRequest = count($request->all());
     	foreach($request->request as  $key2=>$value) {
             if( $numberRequest >= count($request->all()) - 4) {
@@ -76,23 +63,26 @@ class AssignController extends Controller
                 continue;
             }
             $numberRequest--;
-           
+            
+
 			$test1 = explode("/",$key2)[0];
 			$test2 = explode("/",$key2)[1];
 			$key2 = $test1." ".$test2;
 			$key2 = str_replace('_', '.', $key2);
             //Ket thuc lay lai ma hoc phan
-            
+            echo $test1."<br />".$test2."<br />".$key2."<br />";
             //Kiem tra du lieu
             if($magv == '') {
                 $Error = 'Thiếu tên giảng viên.';
                 break;
             }
-			$sch = DB::table('schedules')->where('ID_Module_Class',   $key2)->get();
+			$count_sch = DB::table('module_class')->where('ID_Module_Class','=', $key2)->count();
+            $sch = DB::table('schedules')->where('ID_Module_Class','=', $key2)->get();
+            //dd($sch);
             $sch_gv = DB::table('schedules')->join('module_class','schedules.ID_Module_Class','=','module_class.ID_Module_Class')->where('ID_Teacher',   $magv)->get();
             
-            if($sch->isEmpty()) {
-                $Error = 'Mã học phần không tồn tại';
+            if($count_sch <= 0) {
+                $Error = 'Mã học phần không tồn tại: '.$key2;
                 break;
             }
             if($sch_gv->isEmpty()) {
@@ -103,7 +93,11 @@ class AssignController extends Controller
             //Ket thuc kiem tra du lieu
             foreach($sch_gv as $value1) {
                 foreach ($sch as  $value2) {
-                    if(($value1->Day_Schedules == $value2->Day_Schedules and $value1->Shift_Schedules == $value2->Shift_Schedules) and $value1->Shift_Schedules != 0 ){
+                    //dd($value1);
+                    if(($value1->Day_Schedules == $value2->Day_Schedules 
+                        and $value1->Shift_Schedules == $value2->Shift_Schedules) 
+                        and $value1->Shift_Schedules != 0 )
+                    {
                         $Error = "Lỗi ".$value1->ID_Module_Class." Thời gian: ".$value1->Day_Schedules.";Ca: ".$value1->Shift_Schedules." Trùng với môn: ".$value2->ID_Module_Class.";Ca: ".$value2->Shift_Schedules;
                         break 3;
                     }
@@ -115,21 +109,20 @@ class AssignController extends Controller
         
             $numberInsertedValue++;
             //Ket thuc luu qua trinh phan giang
-            
         }
 
         if($Error != '') {
-            return back()->withErrors($Error)->with('thongbao','Thành công: '.$numberInsertedValue);
+            return back()->withErrors($Error)->with('thongbao','Thành công: '.$numberInsertedValue)->withInput();
         }
         else {
-            return back()->with('thongbao','Thành công: '.$numberInsertedValue);
+            return back()->with('thongbao','Thành công: '.$numberInsertedValue)->withInput();
         }
 
     }
 
 
     public function getGV($id) {
-        echo $id;
+        //echo $id;
         $teacher = DB::table('teacher')->where('Is_Delete','=','0')->where('ID_Department',$id)->get();
         $count =  DB::table('teacher')->where('Is_Delete','=','0')->where('ID_Department',$id)->count();
         if($count == 0 ) {
@@ -144,9 +137,51 @@ class AssignController extends Controller
     }
 
     //Filter ajax
-    public function getFilter(Request $request) {
-        if(request()->ajax()) {
+    // public function getFilter(Request $request) {
+    //     if(request()->ajax()) {
 
+    //         $md = (!empty($_GET["md"])) ? ($_GET["md"]) : ('');
+    //         $dp = (!empty($_GET["dp"])) ? ($_GET["dp"]) : ('');
+    //         $sy = (!empty($_GET["sy"])) ? ($_GET["sy"]) : ('');
+    //         $dh = (!empty($_GET["dh"])) ? ($_GET["dh"]) : ('');
+    //         $kind = (!empty($_GET["kind"])) ? ($_GET["kind"]) : ('');
+
+    //         $data = DB::table('module_class')
+    //         ->join('module','module_class.ID_Module', '=' , 'module.ID_Module')
+    //         ->where('ID_Module_Class','LIKE','MHT%')
+    //         ->whereNULL('module_class.ID_Teacher')
+    //         ->orderBy('ID_Module_Class', 'asc')
+    //         ->when($md,function($query,$md) {
+    //             return $query->where('module_class.ID_Module',$md);
+    //         })->when($sy,function($query,$sy) {
+    //             return $query->where('School_Year',$sy);
+    //         })->when($dp,function($query,$dp) {
+    //             return $query->where('module.ID_Department',$dp);
+    //         })->when($kind,function($query,$kind) {
+    //             if($kind == "BT") {
+    //                 return $query->where('module_class.Module_Class_Name', 'like', '%BT%');
+    //             }
+    //             else if($kind == "TH"){
+    //                 return $query->where('module_class.Module_Class_Name', 'like', '%.1%');
+    //             }
+    //             else if($kind == "TL") {
+    //                 return $query->where('module_class.Module_Class_Name', 'like', '%TL%');
+    //             }
+    //             else if($kind == "DA"){
+    //                 return $query->where('module_class.Module_Class_Name', 'like', '%DA%');
+    //             }
+    //             else return $query->where('module_class.Module_Class_Name', 'not like', '%.1%')->where('module_class.Module_Class_Name', 'not like', '%BT%')->where('module_class.Module_Class_Name', 'not like', '%TL%')->where('module_class.Module_Class_Name', 'not like', '%DA%');
+    //         })->when($dh,function($query,$dp) {
+    //             if($dh > 1 ) return $query->where('module_class.ID_Module_Class','like','%.'.$t.' (%');
+    //         })->where('ID_Teacher','=',NULL)->where('ID_Module_Class','like','MHT%')->get();
+            
+    //         return Response::json($data);
+    //     }
+    // }
+
+    public function getFilter(Request $request) {
+        
+        
             $md = (!empty($_GET["md"])) ? ($_GET["md"]) : ('');
             $dp = (!empty($_GET["dp"])) ? ($_GET["dp"]) : ('');
             $sy = (!empty($_GET["sy"])) ? ($_GET["sy"]) : ('');
@@ -155,6 +190,9 @@ class AssignController extends Controller
 
             $data = DB::table('module_class')
             ->join('module','module_class.ID_Module', '=' , 'module.ID_Module')
+            ->where('ID_Module_Class','LIKE','MHT%')
+            ->whereNULL('module_class.ID_Teacher')
+            ->orderBy('ID_Module_Class', 'asc')
             ->when($md,function($query,$md) {
                 return $query->where('module_class.ID_Module',$md);
             })->when($sy,function($query,$sy) {
@@ -165,23 +203,88 @@ class AssignController extends Controller
                 if($kind == "BT") {
                     return $query->where('module_class.Module_Class_Name', 'like', '%BT%');
                 }
-                else if($kind == "TH"){
-                    return $query->where('module_class.Module_Class_Name', 'like', '%.1%');
+                elseif($kind == "TH"){
+                    return $query->where([
+                                    ['module_class.Module_Class_Name', 'like', '%.1%'],
+                                    ['module_class.Module_Class_Name', 'not like', '%BT%'],
+                                    ['module_class.Module_Class_Name', 'not like', '%TT%'],
+                                ])
+                                ->orWhere([
+                                    ['module_class.Module_Class_Name', 'like', '%TH%'],
+                                    ['module_class.Module_Class_Name', 'not like', '%BT%'],
+                                    ['module_class.Module_Class_Name', 'not like', '%TT%'],
+                                ]);
                 }
-                else if($kind == "TL") {
+                elseif($kind == "TL") {
                     return $query->where('module_class.Module_Class_Name', 'like', '%TL%');
                 }
-                else if($kind == "DA"){
+                elseif($kind == "DA"){
                     return $query->where('module_class.Module_Class_Name', 'like', '%DA%');
                 }
-                else return $query->where('module_class.Module_Class_Name', 'not like', '%.1%')->where('module_class.Module_Class_Name', 'not like', '%BT%')->where('module_class.Module_Class_Name', 'not like', '%TL%')->where('module_class.Module_Class_Name', 'not like', '%DA%');
-            })->when($dh,function($query,$dp) {
-                if($dh > 1 ) return $query->where('module_class.ID_Module_Class','like','%.'.$t.' (%');
-            })->where('ID_Teacher','=',NULL)->where('ID_Module_Class','like','MHT%')->get();
+                elseif($kind == "TT") {
+                      return $query->where('module_class.Module_Class_Name', 'like', '%TT%');
+                }
+                else return $query->where('module_class.Module_Class_Name', 'not like', '%.1%')
+                                ->where('module_class.Module_Class_Name', 'not like', '%TH%')   
+                                ->where('module_class.Module_Class_Name', 'not like', '%BT%')
+                                ->where('module_class.Module_Class_Name', 'not like', '%TL%')
+                                ->where('module_class.Module_Class_Name', 'not like', '%DA%')
+                                ->where('module_class.Module_Class_Name', 'not like', '%TT%');
+            })->when($dh,function($query,$dh) {
+                if($dh > 1 ) return $query->where('module_class.ID_Module_Class','like','%-'.$dh.' (%');
+            })->where('ID_Teacher','=',NULL)->where('ID_Module_Class','like','MHT%')->paginate(10);
             
-            return Response::json($data);
-        }
+
+            $teacher = DB::table('teacher')->where('Is_Delete','=','0')->where('ID_Department','=','MHT')->get();
+            $teacher_All = DB::table('teacher')->where('Is_Delete','=','0')->get();
+            $departments = DB::select(DB::raw("SELECT ID_Department,Department_Name FROM department"));
+        
+            return view('assign.assignView')->with(['schedules' => $data, 'teacher' => $teacher,'teacher_All' => $teacher_All,'departments' => $departments]);
     }
+
+    // public function test() {
+    //     $md = (!empty($_GET["md"])) ? ($_GET["md"]) : ('');
+    //     $dp = (!empty($_GET["dp"])) ? ($_GET["dp"]) : ('');
+    //     $sy = (!empty($_GET["sy"])) ? ($_GET["sy"]) : ('');
+    //     $dh = (!empty($_GET["dh"])) ? ($_GET["dh"]) : ('');
+    //     $kind = (!empty($_GET["kind"])) ? ($_GET["kind"]) : ('');
+
+    //     $data = DB::table('module_class')
+    //     ->join('module','module_class.ID_Module', '=' , 'module.ID_Module')
+    //     ->where('ID_Module_Class','LIKE','MHT%')
+    //     ->whereNULL('module_class.ID_Teacher')
+    //     ->orderBy('ID_Module_Class', 'asc')
+    //     ->when($md,function($query,$md) {
+    //         return $query->where('module_class.ID_Module',$md);
+    //     })->when($sy,function($query,$sy) {
+    //         return $query->where('School_Year',$sy);
+    //     })->when($dp,function($query,$dp) {
+    //         return $query->where('module.ID_Department',$dp);
+    //     })->when($kind,function($query,$kind) {
+    //         if($kind == "BT") {
+    //             return $query->where('module_class.Module_Class_Name', 'like', '%BT%');
+    //         }
+    //         else if($kind == "TH"){
+    //             return $query->where('module_class.Module_Class_Name', 'like', '%.1%');
+    //         }
+    //         else if($kind == "TL") {
+    //             return $query->where('module_class.Module_Class_Name', 'like', '%TL%');
+    //         }
+    //         else if($kind == "DA"){
+    //             return $query->where('module_class.Module_Class_Name', 'like', '%DA%');
+    //         }
+    //         else return $query->where('module_class.Module_Class_Name', 'not like', '%.1%')->where('module_class.Module_Class_Name', 'not like', '%BT%')->where('module_class.Module_Class_Name', 'not like', '%TL%')->where('module_class.Module_Class_Name', 'not like', '%DA%');
+    //     })->when($dh,function($query,$dp) {
+    //         if($dh > 1 ) return $query->where('module_class.ID_Module_Class','like','%.'.$t.' (%');
+    //     })->where('ID_Teacher','=',NULL)->where('ID_Module_Class','like','MHT%')->paginate(10);
+        
+
+    //     $teacher = DB::table('teacher')->where('Is_Delete','=','0')->where('ID_Department','=','MHT')->get();
+    //     $teacher_All = DB::table('teacher')->where('Is_Delete','=','0')->get();
+    //     $departments = DB::select(DB::raw("SELECT ID_Department,Department_Name FROM department"));
+    
+    //     return view('assign.assignView')->with(['schedules' => $data, 'teacher' => $teacher,'teacher_All' => $teacher_All,'departments' => $departments]);
+    // }
 
     public function index2() {
         $schedules = DB::table('module_class')->

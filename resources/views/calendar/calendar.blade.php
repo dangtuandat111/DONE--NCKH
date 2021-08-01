@@ -67,8 +67,8 @@ $(document).ready(function() {
                       start: new Date(response[i].start),
                       end: new Date(response[i].end),
                       allDay: false,
-                      backgroundColor: '#ffffff',
-                      borderColor: "#007bff",
+                      backgroundColor: response[i].backgroundColor,
+                      borderColor: "#000000",
                   }
                   events.push(the_event);
               }
@@ -103,11 +103,17 @@ $(document).ready(function() {
     var Calendar = FullCalendar.Calendar;
     var calendarEl = document.getElementById('calendar');
     var calendar = new Calendar(calendarEl, {
+       
+        locale: 'vi', // the initial locale. of not specified, uses the first on
         plugins: ['bootstrap', 'interaction', 'dayGrid', 'timeGrid'],
         header: {
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            right: 'dayGridMonth,timeGridDay'
+        },
+         buttonText: {
+          today: 'Hôm nay',
+          month: 'Tháng'
         },
         events : event,
         editable: false,

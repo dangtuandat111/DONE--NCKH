@@ -31,16 +31,16 @@
                       </select>
                     </div>
 
-                    <div class = "col-4">
+                    <!-- <div class = "col-4">
                       <select id="select_dp" class = "custom-select">
                           <option value ="">Chọn bộ môn</option>
                           @foreach($departments as $hp) 
                           <option class = "option" value = "{{$hp->ID_Department}}">{{$hp->Department_Name}}</option>
                           @endforeach()
                       </select>
-                    </div>
+                    </div> -->
 
-                    <div class = "col-2">
+                    <div class = "col-4">
                       <select id="select_cd" class = "custom-select">
                           <option value ="">Chọn số tín chỉ</option>
                           @foreach($credits as $hp) 
@@ -57,7 +57,7 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <div class="row" id = "row">
           <div class="col-12">
             <div class="card">
               <div class="card-header">
@@ -129,55 +129,67 @@
 
 <script>
   $(document).ready(function() {
+    // $("#Filter").click(function() {
+    //   var md = $("#select_md").val();
+    //   var cd = $("#select_cd").val();
+    //   var dp = $("#select_dp").val();
+    //   var item = "";
+    //   alert(md+"//"+cd+"//"+dp);
+    //   $.ajax({
+    //     type: 'get',
+    //     dataType: 'json',
+    //     url: "{{url('/admin/hocphan/filter')}}",
+    //     data: 'md='+md+'&dp='+dp+'&cd='+cd,
+    //     //module department credit
+    //     success:function(response) {
+    //       console.log(response);
+    //       $("#tbody").empty();
+    //       $("#pagination").empty();
+    //       $.each(response, function (index,val) { //looping table detail bahan
+    //           if(val.Theory == null) val.Theory = 0 ;
+    //           if(val.Exercise == null) val.Exercise = 0 ;
+    //           if(val.Practice == null) val.Practice = 0 ;
+    //           if(val.Project == null) val.Project = 0 ;
+    //           var item = `
+    //             <tr class="" style="font-size:14px">
+    //               <td>${val.ID_Module}</td>
+    //               <td>${val.Module_Name}</td>
+    //               <td>${val.Credit}</td>
+    //               <td>${val.Theory}</td>
+    //               <td>${val.Exercise}</td>
+    //               <td>${val.Practice}</td>
+    //               <td>${val.Project}</td>
+    //               <td>${val.ID_Department}</td>
+    //               @if(Auth::user()->permission == 2)
+    //               <td class = " center"><i class="fas fa-trash"></i><a href="../hocphan/xoa/${val.ID_Module}" onclick="return confirm('Xác nhận xóa học phần này?');">Xóa</a></td>
+    //               <td class = " center"><i class="fas fa-eye"></i><a href = "../hocphan/sua/${val.ID_Module}">Sửa</a></td>
+    //               @endif
+    //             </tr>
+    //              `;
+    //           $("#tbody").append(item);
+    //         });
+    //     }
+    //   });
+    // })
+
     $("#Filter").click(function() {
       var md = $("#select_md").val();
       var cd = $("#select_cd").val();
-      var dp = $("#select_dp").val();
+      //var dp = $("#select_dp").val();
       var item = "";
-      alert(md+"//"+cd+"//"+dp);
-      $.ajax({
-        type: 'get',
-        dataType: 'json',
-        url: "{{url('/admin/hocphan/filter')}}",
-        data: 'md='+md+'&dp='+dp+'&cd='+cd,
-        //module department credit
-        success:function(response) {
-          console.log(response);
-          $("#tbody").empty();
-          $("#pagination").empty();
-          $.each(response, function (index,val) { //looping table detail bahan
-              if(val.Theory == null) val.Theory = 0 ;
-              if(val.Exercise == null) val.Exercise = 0 ;
-              if(val.Practice == null) val.Practice = 0 ;
-              if(val.Project == null) val.Project = 0 ;
-              var item = `
-                <tr class="" style="font-size:14px">
-                  <td>${val.ID_Module}</td>
-                  <td>${val.Module_Name}</td>
-                  <td>${val.Credit}</td>
-                  <td>${val.Theory}</td>
-                  <td>${val.Exercise}</td>
-                  <td>${val.Practice}</td>
-                  <td>${val.Project}</td>
-                  <td>${val.ID_Department}</td>
-                  @if(Auth::user()->permission == 2)
-                  <td class = " center"><i class="fas fa-trash"></i><a href="../hocphan/xoa/${val.ID_Module}" onclick="return confirm('Xác nhận xóa học phần này?');">Xoa</a></td>
-                  <td class = " center"><i class="fas fa-eye"></i><a href = "../hocphan/sua/${val.ID_Module}">Sua</a></td>
-                  @endif
-                </tr>
-                 `;
-              $("#tbody").append(item);
-            });
-        }
-      });
-    })
-  });
-
-  $(document).ready(function() {
-      $('#pagination').on('click', function(e){
-        e.preventDefault();
+      //alert(md+"//"+cd+"//"+dp);
+      $.get('filter?md='+md+'&cd='+cd,function(response) {
+        
+          $("#row").html(response); // 
+      },'html');
     });
-  });
+
+  // $(document).ready(function() {
+  //     $('#pagination').on('click', function(e){
+  //       e.preventDefault();
+  //   });
+  // });
+});
 </script>
 
 @endsection

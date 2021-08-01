@@ -1,5 +1,5 @@
-@section('DeMuc', 'Danh sách yêu cầu thay đổi giờ giảng')
-@section('title', 'Yêu cầu thay đổi giờ giảng')
+@section('DeMuc', 'Phân phòng')
+@section('title', 'Phân Phòng')
 
 @extends('admin.dashboard')
 @section('content')
@@ -41,7 +41,7 @@
             <!-- Default box -->
 	          	 <div class="card">
 	              <div class="card-header">
-	                <h3 class="card-title">Danh sách:</h3>
+	                <h3 class="card-title">Danh sách</h3>
 	              </div>
 	              <!-- /.card-header -->
                 

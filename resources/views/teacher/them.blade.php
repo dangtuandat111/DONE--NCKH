@@ -39,7 +39,7 @@
 	            </div>
 
 	            <div class="form-group">
-	                <label for="inputTeacher_name">Tên giảng viên</label>
+	                <label for="inputTeacher_name">Tên giảng viên / Tên tài khoản</label>
 	                <input type="text" name="inputTeacher_name" class="form-control" placeholder="Nhập vào tên giảng viên" value = "{{old('inputTeacher_name')}}">
 	            </div>
 
@@ -52,9 +52,8 @@
 	                <label for="inputPermission">Phân Quyền</label>
 	                 <select class="form-control custom-select" name = "inputPermission">
 	                  <option selected disabled>Chọn quyền</option>
-	            				<option value="Admin">Admin</option>
 	            				<option value="Giảng viên">Giảng viên</option>
-	            				<option value="Phòng đào tạo">Phòng đào tạo</option>
+	            				<option value="Quản lý phòng học">Quản lý phòng học</option>
 	                </select>
 	            </div>
 
@@ -77,7 +76,7 @@
 	                <label for="inputTeacher_Rank">Học vị</label>
 	                <select class="form-control custom-select" name = "inputTeacher_Rank" value = "{{old('inputTeacher_Rank')}}">
 	                  <option selected disabled>Chọn học vị</option>
-		                	
+		                		<option value="Thạc sĩ">Không có</option>
                 				<option value="Thạc sĩ">Thạc sĩ</option>
                 				<option value="Tiến sĩ">Tiến sĩ</option>
                 				<option value="Giáo sư">Giáo sư</option>

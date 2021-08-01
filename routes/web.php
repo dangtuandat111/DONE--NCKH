@@ -31,8 +31,6 @@ Route::group(['middleware' => 'guest'] , function() {
 	Route::match(['get','post'],'login', ['as' => 'login', 'uses' =>'App\Http\Controllers\LoginController@index']);
 });
 
-
-
 Route::group(['middleware' => 'auth' ], function() {
 	Route::group(['prefix' => 'admin'], function() {
 		Route::group(['prefix' => 'hocphan'], function() {
@@ -71,16 +69,15 @@ Route::group(['middleware' => 'auth' ], function() {
 
 		Route::group(['prefix' => 'export'], function() {
 			Route::post('giangvien',  'App\Http\Controllers\ExportController@postTeacher' );
-			Route::post('phong',  'App\Http\Controllers\ExportController@postRoom' );
-			Route::post('hocphan',  'App\Http\Controllers\ExportController@postModules' );
+			Route::post('thongke',  'App\Http\Controllers\ExportController@postThongKe' );
+			
 		});
-
 		Route::group(['prefix' => 'module_class'],function()  {
 			Route::get('thongtin','App\Http\Controllers\Module_classController@getThongTin');
 			Route::get('filter','App\Http\Controllers\Module_classController@getFilter');
+			Route::get('filterHP/{id}','App\Http\Controllers\Module_classController@getFilterHP');
 
 		});
-
 		Route::group(['prefix' => 'fix'],function()  {
 			Route::get('thongtin','App\Http\Controllers\FixController@getThongTin');
 			Route::get('getPaginate','App\Http\Controllers\FixController@getPaginate');
@@ -91,7 +88,6 @@ Route::group(['middleware' => 'auth' ], function() {
 			Route::get('tuchoi/{id}',  'App\Http\Controllers\RequestFixController@Decline');
 
 		});
-
 		Route::group(['prefix' => 'assign'],function()  {
 			Route::get('thongtin','App\Http\Controllers\AssignController@index');
 			Route::post('filter', 'App\Http\Controllers\AssignController@getFilter');
@@ -103,21 +99,17 @@ Route::group(['middleware' => 'auth' ], function() {
 			Route::get('filter','App\Http\Controllers\AssignController@getFilter');
 			Route::get('xoa/{ID_Module_Class}', 'App\Http\Controllers\AssignController@deleteThongTin');
 		});
-
 		Route::group(['prefix' => 'room'], function() {
 			Route::get('thongtin','App\Http\Controllers\RoomController@index');
 			Route::post('submit','App\Http\Controllers\RoomController@submit');
 		});
-
 		Route::group(['prefix' => 'thongke'], function() {
 			Route::get('thongtin','App\Http\Controllers\ThongKeController@index');
 		});
 	});
-
 	Route::get('fullcalendar','App\Http\Controllers\ScheduleController@getAll');
 	Route::get('calendar','App\Http\Controllers\ScheduleController@getOne');
 	//Route::get('testCalendar','App\Http\Controllers\ScheduleController@testGet');
-	
 	Route::get('/home', ['as' => '/home' , 'uses' => 'App\Http\Controllers\LoginController@home']);
 	Route::get('/logout', 'App\Http\Controllers\LoginController@Logout');
 

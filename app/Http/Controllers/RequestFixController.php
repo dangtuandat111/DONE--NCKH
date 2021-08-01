@@ -27,6 +27,21 @@ class RequestFixController extends Controller
         $m = 'Yêu cầu của bạn được chấp nhận';
 
         //Thuc hien thay doi vao bang schedules
+        $dataFix = DB::table('fix')->where('ID_Fix','=',$id)->get();
+        $dataSchedules = DB::table('schedules')->where('ID_Schedules','=',$dataFix[0]->ID_Schedules)->get();
+
+        //dd($dataFix);
+        DB::table('schedules')->where('ID_Schedules','=',$dataFix[0]->ID_Schedules)->update([
+            'Shift_Schedules' => $dataFix[0]->Shift_Fix,
+            'Day_Schedules' => $dataFix[0]->Day_Fix,
+        
+        ]);
+
+        DB::table('fix')->where('ID_Fix','=',$dataFix[0]->ID_Fix)->update([
+            'Shift_Fix' => $dataSchedules[0]->Shift_Schedules,
+            'Day_Fix' => $dataSchedules[0]->Day_Schedules
+        ]);
+
         $this->sendMail($id,$m);
     	return back()->with('thongbao','Chấp nhận thành công');
     }

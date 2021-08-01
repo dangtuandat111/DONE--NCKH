@@ -67,8 +67,8 @@ $(document).ready(function() {
                       start: new Date(response[i].start),
                       end: new Date(response[i].end),
                       allDay: false,
-                      backgroundColor: '#ffffff',
-                      borderColor: "#007bff",
+                      backgroundColor: response[i].backgroundColor,
+                      borderColor: "#000000",
                   }
                   events.push(the_event);
               }
@@ -110,6 +110,11 @@ $(document).ready(function() {
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridDay'
+        },
+        buttonText: {
+          today: 'Hôm nay',
+          month: 'Tháng',
+          day: 'Ngày'
         },
         events : event,
         editable: false,

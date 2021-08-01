@@ -69,6 +69,7 @@
                         <option value="TH">Thực hành </option>
                         <option value="TL">Tự luận </option>
                         <option value="DA">Đồ án </option>
+                        <option value="TT">Đồ án </option>
                     </select>
                   </div>
 
@@ -105,7 +106,7 @@
         </div>
       </div>
       
-      <div class="row">
+      <div class="row" id = "row">
     	 <!-- Default box -->
           <div class="col-12">
             <!-- Default box -->
@@ -197,8 +198,8 @@
                           @endforeach
                         
                           </tbody>
-                      </table>
-                  </form>
+                  </table>
+
                   <nav aria-label = "Page navigation example" id="pagination">
                       {{ $schedules->links() }}
                   </nav> 
@@ -234,53 +235,62 @@
       });
     });
 
-    $("#Filter").click(function() {
+    // $("#Filter").click(function() {
+    //   var md = $("#select_md").val();
+    //   var sy = $("#select_sy").val();
+    //   //var dp = $("#select_dp").val();
+    //   var dh = $("#select_DotHoc").val();
+    //   var kind = $("#kind").val();
+    //   var item = "";
+    //   //alert(md+"//"+sy+"//"+dp+"//"+dh+"//"+kind);
+    //   alert(md+"//"+sy+"//"+dh+"//"+kind);
+    //   $.ajax({
+    //     type: 'get',
+    //     dataType: 'json',
+    //     url: "{{url('/admin/assign/filter')}}",
+    //     data: 'md='+md+'&sy='+sy+'&dh='+dh+'&kind='+kind,
+        
+    //     success:function(response) {
+    //       //console.log(response);
+    //       $("#tbody").empty();
+    //       $("#pagination").empty();
+
+    //       $.each(response, function (index,val) { 
+              
+    //           if(val.Number_Reality == null ) val.Number_Reality = 0;
+    //           console.log(val.ID_Module_Class);
+    //           var tempt = (val.ID_Module_Class).split(" ");
+    //           var name = tempt[0]+'/'+tempt[1];
+    //           console.log(name);
+    //           var item = `
+    //             <tr class="" >
+    //               <th><input type ="checkbox"  name = ${name} value = ${name} ></th>
+    //               <td>${val.ID_Module_Class}</td>
+    //               <td>${val.Module_Class_Name}</td>
+    //               <td>${val.Number_Reality}</td>
+    //               <td>${val.School_Year}</td>
+    //             </tr>
+    //              `;
+    //           $("#tbody").append(item);
+              
+    //       });
+    //     }
+    //   //end ajax
+    //   });
+    // });
+
+     $("#Filter").click(function() {
       var md = $("#select_md").val();
       var sy = $("#select_sy").val();
       //var dp = $("#select_dp").val();
       var dh = $("#select_DotHoc").val();
       var kind = $("#kind").val();
       var item = "";
-      //alert(md+"//"+sy+"//"+dp+"//"+dh+"//"+kind);
-      //alert(md+"//"+sy+"//"+dp+"//"+dh+"//"+kind);
-      $.ajax({
-        type: 'get',
-        dataType: 'json',
-        url: "{{url('/admin/assign/filter')}}",
-        data: 'md='+md+'&sy='+sy+'&dh='+dh+'&kind='+kind,
-        
-        success:function(response) {
-          //console.log(response);
-          $("#tbody").empty();
-          $("#pagination").empty();
 
-          $.each(response, function (index,val) { 
-              //console.log(val);
-              if(val.Number_Reality == null ) val.Number_Reality = 0;
-              var tempt = (val.ID_Module_Class).split(" ");
-              var name = tempt[0]+'/'+tempt[1];
-              console.log(name);
-              var item = `
-                <tr class="" >
-                  <th><input type ="checkbox"  name = ${name} value = ${name} ></th>
-                  <td>${val.ID_Module_Class}</td>
-                  <td>${val.Module_Class_Name}</td>
-                  <td>${val.Number_Reality}</td>
-                  <td>${val.School_Year}</td>
-                </tr>
-                 `;
-              $("#tbody").append(item);
-              //$("#pagination").append(item);
-          });
-        }
-      //end ajax
-      });
-
-      // $('#pagination a').on('click', function(e){
-      //   e.preventDefault();
-      //   // var page = $(this).attr('href').split('page=')[1];
-      //   // getData(page,md,sy,dp,dh,kind);
-      // });
+      $.get('filter?md='+md+'&sy='+sy+'&dh='+dh+'&kind='+kind,function(response) {
+        //console.log("a");
+          $("#row").html(response); // 
+      },'html');
 
     });
 
@@ -301,18 +311,18 @@
     });
   });  
 
-  function getData(page,md,sy,dp,dh,kind)
-       {
-            $.ajax({
+  // function getData(page,md,sy,dp,dh,kind)
+  //      {
+  //           $.ajax({
               
-              type: "GET",
-              url: '/admin/assign/filter?page='+page,
-              data: 'md='+md+'&dp='+dp+'&sy='+sy+'&dh='+dh+'&kind='+kind,
-            })
-            .success(function(data) {
-                 $('body').html(data);
-            });
-       }
+  //             type: "GET",
+  //             url: '/admin/assign/filter?page='+page,
+  //             data: 'md='+md+'&dp='+dp+'&sy='+sy+'&dh='+dh+'&kind='+kind,
+  //           })
+  //           .success(function(data) {
+  //                $('body').html(data);
+  //           });
+  //      }
 </script>
 <script src=
 "https://code.jquery.com/jquery-1.12.4.min.js"></script>

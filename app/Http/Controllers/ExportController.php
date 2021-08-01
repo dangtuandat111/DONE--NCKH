@@ -13,7 +13,7 @@ class ExportController extends Controller
     	$filename = "MAU_THEM_GIANGVIEN.xlsx";
 	    	 // Get path from storage directory
 	    $path = app_path('File_Export\\'.$filename);
-
+        
 	    // Download file with custom headers
 	    return response()->download($path, $filename, [
 	        'Content-Type' => 'application/vnd.ms-excel',
@@ -21,33 +21,20 @@ class ExportController extends Controller
 	    ]);
     }
 
-     public function postRoom() {
-    	$filename = "MAU_THEM_PHONGHOC.xlsx";
-	    	 // Get path from storage directory
-	    $path = app_path('File_Export\\'.$filename);
+    
 
-	    // Download file with custom headers
-	    return response()->download($path, $filename, [
-	        'Content-Type' => 'application/vnd.ms-excel',
-	        'Content-Disposition' => 'inline; filename="' . $filename . '"'
-	    ]);
-    }
+    public function postThongKe(Request $request) {
+    	$i = 0 ; 
+    	$month = 0;
+    	foreach($request->request as $data) {
+    		if($i==1) {$month = $data; break;}
+    		$i++;
+    	}
+    	$month = (int)$month;
+    	//dd($month);
+    	$export = new FileExport($month);
 
-     public function postModules() {
-    	$filename = "MAU_THEM_HOCPHAN.xlsx";
-	    	 // Get path from storage directory
-	    $path = app_path('File_Export\\'.$filename);
-
-	    // Download file with custom headers
-	    return response()->download($path, $filename, [
-	        'Content-Type' => 'application/vnd.ms-excel',
-	        'Content-Disposition' => 'inline; filename="' . $filename . '"'
-	    ]);
-    }
-
-    public function postThongKe() {
-    	Excel::create('Filename', function($excel) {
-
-		})->export('xlsx');
+    	return Excel::download($export, 'export.xlsx');
+    	//return back();
     }
 }

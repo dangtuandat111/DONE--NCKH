@@ -69,8 +69,18 @@
               <div class = "col-2">
                 <select id="select_sy" class = "custom-select">
                   <option value ="">Chọn năm học</option>
-                    @foreach($school_year as $sy) 
-                    <option class = "option" value = "{{$sy->School_Year}}">{{$sy->School_Year}}</option>
+                    @foreach($school_year as $sch) 
+                      <option class = "option" value = "{{$sch->School_Year}}">
+                      <?php 
+                        $HK = explode( '-', $sch->School_Year)[0];
+                        $NH = explode( '-', $sch->School_Year)[1];
+                        $NH = "20".$NH;
+                        $NH_number = (int) $NH+1;
+                        $NH = $NH."-".$NH_number;
+                        echo "Kì ".$HK." ".$NH;
+                      ?>
+
+                      </option>
                     @endforeach()
                 </select>
               </div>
@@ -83,6 +93,8 @@
                     <option class = "option" value = "BT">Bài tập</option>
                     <option class = "option" value = "TH">Thực hành</option>
                     <option class = "option" value = "TL">Tự luận</option>
+                    <option class = "option" value = "DA">Đồ án</option>
+                    <option class = "option" value = "TT">Thực tập tốt nghiệp</option>
                 </select>
               </div>
 
@@ -96,7 +108,7 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row" id = "row">
       <div class="col-12 col-sm-12 col-xs-12 col-md-12 col-xl-12">
         <div class="card">
           <div class="card-header">
@@ -159,42 +171,24 @@
       var kind = $("#select_kind").val();
 
       var item = "";
-      alert(md+"//"+cd+"//"+dp+"//"+pg+"//"+gv+"//"+sy+"//"+kind);
-      $.ajax({
-        type: 'get',
-        dataType: 'json',
-        url: "{{url('/admin/module_class/filter')}}",
-        data: 'md='+md+'&dp='+dp+'&cd='+cd+'&pg='+pg+'&gv='+gv+'&sy='+sy+'&kind='+kind,
-        //module department credit phangiang teacher
-        success:function(response) {
-          console.log(response);
-          $("#tbody").empty();
-          $("#pagination").empty();
-          $.each(response, function (index,val) { //looping table detail bahan
-              if(val.Number_Reality == null) val.Number_Reality = 0 ;
-              if(val.ID_Teacher == null) val.ID_Teacher = '';
-              var item = `
-                <tr class="" style="font-size:14px">
-                  <td>${val.ID_Module_Class}</td>
-                  <td>${val.Module_Class_Name}</td>
-                  <td>${val.Number_Reality}</td>
-                  <td>${val.School_Year}</td>
-                  <td>${val.ID_Module}</td>
-                  <td>${val.ID_Teacher}</td>
-                 `;
-              $("#tbody").append(item);
-            });
-          
-        }
-      });
+      //alert(md+"//"+cd+"//"+dp+"//"+pg+"//"+gv+"//"+sy+"//"+kind);
+      $.get('filter?md='+md+'&dp='+dp+'&cd='+cd+'&pg='+pg+'&gv='+gv+'&sy='+sy+'&kind='+kind,function(response) {
+        //console.log("a");
+          $("#row").html(response); // 
+        },'html');
     })
+
+    $("#select_dp").change(function() {
+      var dp = $(this).val();
+      console.log(dp);
+      $.get("filterHP/"+dp,function(data){
+        $("#select_md").html(data);
+      });
+    });
   });
 
-  // $(document).ready(function() {
-  //     $('#pagination').on('click', function(e){
-  //       e.preventDefault();
-  //   });
-  // });
+  
+
 </script>
 @endsection
 

@@ -44,7 +44,7 @@ class teacherImport implements ToCollection
 		    	$pass = $item[6];
 		    	$email = $item[7];
 		    	$dp = $item[8];
-	    	}catch (Exception $e) {
+	    	}catch (\Exception $e) {
 	    		$error = 'Lỗi dữ liệu nhập';
 	    		break;
 	    	}
@@ -64,7 +64,7 @@ class teacherImport implements ToCollection
 	    		]);
 	    		$this->numberInsertedValue ++;
 	    		//echo "da ra";
-	    	}catch (Exception $e) {
+	    	}catch (\Exception $e) {
 	    		$error = 'Lỗi khi thêm giảng viên';
 	    		break;
 	    	}

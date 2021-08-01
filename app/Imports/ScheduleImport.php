@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithConditionalSheets;
+use Maatwebsite\Excel\Concerns\SkipsUnknownSheets;
 use Carbon\Carbon;
 use DateTime;
 use DB;
@@ -20,7 +21,7 @@ use App\models\rooms;
 use Illuminate\Support\Str;
 
 
-class ScheduleImport implements ToCollection,WithMultipleSheets
+class ScheduleImport implements ToCollection,WithMultipleSheets,SkipsUnknownSheets
 {
     use WithConditionalSheets; 
     /**
@@ -42,7 +43,7 @@ class ScheduleImport implements ToCollection,WithMultipleSheets
     private $N = 26;
 
     public $kind = 1;
-    //Yêu cầu chỉ đọc file excel với 1 sheet
+    
     //Hiển thị số dòng thêm thành công
     public $numberSuccess = 0;
     public $numberBlank = 0 ;
@@ -62,13 +63,10 @@ class ScheduleImport implements ToCollection,WithMultipleSheets
         ];
     }
 
-    public function sheets(): array
+    public function onUnknownSheet($sheetName)
     {
-        return [
-           //0 =>  new newImport(),
-           new ScheduleImport(),
-           new ScheduleImport(),
-        ];
+        // E.g. you can log that a sheet was not found.
+        info("Sheet {$sheetName} was skipped");
     }
 
     public function collection(Collection $collection)
@@ -121,13 +119,13 @@ class ScheduleImport implements ToCollection,WithMultipleSheets
             return back()->withErrors($status.": Dòng ".$dong." - Sheet: ".($this->sheet-1))->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess.' Số học phần chưa có ngày học: '.$this->numberBlank);
         }
     	else {
-            // echo $this->numberBlank."<br >";
-            // echo $this->numberSuccess;
-            // echo '<pre>'; print_r($this->arraySchedules); echo '</pre>'; 
-            // echo '<pre>'; print_r($this->arrayModuleClass); echo '</pre>';  echo "DHet";
+            echo $this->numberBlank."<br >";
+            echo $this->numberSuccess;
+            echo '<pre>'; print_r($this->arraySchedules); echo '</pre>'; 
+            echo '<pre>'; print_r($this->arrayModuleClass); echo '</pre>';  echo "DHet";
 
-            DB::table('module_class')->insert($this->arrayModuleClass);
-            DB::table('schedules')->insert($this->arraySchedules);
+            // DB::table('module_class')->insert($this->arrayModuleClass);
+            // DB::table('schedules')->insert($this->arraySchedules);
             
             return back()->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess.' Số học phần chưa có ngày học: '.$this->numberBlank);
         }
@@ -323,8 +321,9 @@ class ScheduleImport implements ToCollection,WithMultipleSheets
                 $dothoc = explode("-",$tenhp)[3];
                 //dd($dothoc);
                 $kieukt = explode(" ",$dothoc)[1];
-                $nam = explode(" ",$dothoc)[0];
+                $dothoc = explode(" ",$dothoc)[0];
 
+                $ID_Module_Class = $mahp."-".$kihoc."-".$nam."-".$dothoc." ".$kieukt;
                 //Chưa kiểm tra đọt học
                 //$contains = 
                 // if(Str::contains($nam,'.')) {
@@ -341,6 +340,7 @@ class ScheduleImport implements ToCollection,WithMultipleSheets
                 $kieukt = explode(" ",$nam)[1];
                 $nam = explode(" ",$nam)[0];
 
+                $ID_Module_Class = $mahp."-".$kihoc."-".$nam." ".$kieukt;
                 //Chưa kiểm tra đọt học
                 //$contains = 
                 // if(Str::contains($nam,'.')) {
@@ -354,7 +354,7 @@ class ScheduleImport implements ToCollection,WithMultipleSheets
             return 'Lỗi tên học phần: '.$tenhp;
         }
 
-        $ID_Module_Class = $mahp."-".$kihoc."-".$nam." ".$kieukt;
+        
         $ID_Module_Class_2 = $ID_Module_Class;
         $Module_Class_Name = $tenhp;
         //Hết đọc tên lớp học phần
@@ -443,6 +443,7 @@ class ScheduleImport implements ToCollection,WithMultipleSheets
                 // echo "<br />".$mahp;
                 // echo "<br />"."Thêm mới lớp học phần";
             }
+            
         }catch (Exception $e) {
             return 'Lỗi khi thêm học phần.';
         }

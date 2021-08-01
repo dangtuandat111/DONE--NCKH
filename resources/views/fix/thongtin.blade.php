@@ -69,7 +69,7 @@
                       <td> {{$data->ID_Module_Class }}</td>
                       <td> {{$data->ID_Room}}</td>
                       <td> {{$data->Shift_Schedules}}</td>
-                      <td> {{$data->Day_Schedules}}</td>
+                      <td> <?php  echo "Ca:".$dt->Shift_Fix."<br>Ngày: ".\Carbon\Carbon::parse($dt->Day_Fix)->format('d/m/Y') ?>{{$data->Day_Schedules}}</td>
                       <td class = " center"><i class="fas fa-eye"></i><a href=""  data-toggle = "modal" data-target="#editModule_Class" data-title = "{{$data->ID_Module_Class}}"
                         data-day = "{{$data->ID_Module_Class}}"
                         onclick = "showPopUP('{{$data->ID_Module_Class}}','{{$data->Day_Schedules}}','{{$data->ID_Schedules}}')" >Sửa</a></td>

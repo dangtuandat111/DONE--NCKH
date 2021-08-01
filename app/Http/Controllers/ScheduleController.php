@@ -29,6 +29,22 @@ class ScheduleController extends Controller
           END AS start, 
 
           CASE 
+          WHEN teacher.ID_Teacher = '0172' THEN  '#D1D8FD'
+          WHEN teacher.ID_Teacher = '0175' THEN  '#D5D6EA'
+          WHEN teacher.ID_Teacher = '0849' THEN  '#F6F6EB'
+          WHEN teacher.ID_Teacher = '0884' THEN  '#D7ECD9'
+          WHEN teacher.ID_Teacher = '0896' THEN  '#F5D5CB'
+          WHEN teacher.ID_Teacher = '1207' THEN  '#F6ECF5'
+          WHEN teacher.ID_Teacher = '1268' THEN  '#F3DDF2'
+          WHEN teacher.ID_Teacher = '1387' THEN  '#FFEFCF'
+          WHEN teacher.ID_Teacher = '1406' THEN  '#F6F5F0'
+          WHEN teacher.ID_Teacher = '1614' THEN  '#D8F0FA'
+          WHEN teacher.ID_Teacher = '1634' THEN  '#EFB6BC'
+
+          ELSE '#05f78a'
+          END AS backgroundColor,
+
+          CASE 
           WHEN Shift_Schedules = 1 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 9 HOUR),INTERVAL 30 MINUTE) 
           WHEN Shift_Schedules = 2 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 12 HOUR),INTERVAL 05 MINUTE) 
           WHEN Shift_Schedules = 3 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 15 HOUR),INTERVAL 30 MINUTE) 
@@ -67,15 +83,33 @@ class ScheduleController extends Controller
           WHEN Shift_Schedules = 1 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 7 HOUR),INTERVAL 0 MINUTE) 
           WHEN Shift_Schedules = 2 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 9 HOUR),INTERVAL 35 MINUTE) 
           WHEN Shift_Schedules = 3 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 13 HOUR),INTERVAL 0 MINUTE) 
-          WHEN Shift_Schedules = 4 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 15 HOUR),INTERVAL 35 MINUTE) 
+          WHEN Shift_Schedules = 4 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 15 HOUR),INTERVAL 35 MINUTE)
+          WHEN Shift_Schedules = 5 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 18 HOUR),INTERVAL 10 MINUTE)
           ELSE DATE_ADD(Day_Schedules, INTERVAL 20 HOUR) 
           END AS start, 
+
+          CASE 
+          WHEN teacher.ID_Teacher = '0172' THEN  '#D1D8FD'
+          WHEN teacher.ID_Teacher = '0175' THEN  '#D5D6EA'
+          WHEN teacher.ID_Teacher = '0849' THEN  '#F6F6EB'
+          WHEN teacher.ID_Teacher = '0884' THEN  '#D7ECD9'
+          WHEN teacher.ID_Teacher = '0896' THEN  '#F5D5CB'
+          WHEN teacher.ID_Teacher = '1207' THEN  '#F6ECF5'
+          WHEN teacher.ID_Teacher = '1268' THEN  '#F3DDF2'
+          WHEN teacher.ID_Teacher = '1387' THEN  '#FFEFCF'
+          WHEN teacher.ID_Teacher = '1406' THEN  '#F6F5F0'
+          WHEN teacher.ID_Teacher = '1614' THEN  '#D8F0FA'
+          WHEN teacher.ID_Teacher = '1634' THEN  '#EFB6BC'
+
+          ELSE '#05f78a'
+          END AS backgroundColor,
 
           CASE 
           WHEN Shift_Schedules = 1 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 9 HOUR),INTERVAL 30 MINUTE) 
           WHEN Shift_Schedules = 2 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 12 HOUR),INTERVAL 05 MINUTE) 
           WHEN Shift_Schedules = 3 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 15 HOUR),INTERVAL 30 MINUTE) 
-          WHEN Shift_Schedules = 4 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 18 HOUR),INTERVAL 05 MINUTE) 
+          WHEN Shift_Schedules = 4 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 18 HOUR),INTERVAL 05 MINUTE)
+          WHEN Shift_Schedules = 4 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 25 HOUR),INTERVAL 10 MINUTE) 
           ELSE DATE_ADD(Day_Schedules, INTERVAL 20 HOUR) 
           END AS end
         from 

@@ -48,7 +48,7 @@ class GiangVienController extends Controller
     		'inputPassword_Teacher' => 'required',
     		'inputDoB_Teacher' => 'required',
     		'inputID_Department' => 'required',
-            'inputPhone_number' => 'required|max:10'
+            'inputPhone_number' => ['required','max:10','regex:/((09|03|07|08|05)+([0-9]{8})\b)/']
     	];
 
     	$messages = [
@@ -63,12 +63,10 @@ class GiangVienController extends Controller
     		'inputID_Department.required' => 'Bộ môn là bắt buộc',
 
     		'inputTeacher_name.max' => 'Tên giảng viên tối đa 50 kí tự',
-            'inputPhone_number.regex' => 'Số điện thoại không đúng',
+            'inputPhone_number.regex' => 'Số điện thoại không đúng định dạng',
     		'inputPhone_number.max' => 'Số điện thoại tối đa 10 số',
+
     		'inputEmail.email' => 'Địa chỉ email không đúng',
-    		'inputUser.max' => 'Tên người dùng tối đa 50 kí tự',
-    		'inputPassword.max' => 'Mật khẩu có độ dài không quá 200 kí tự',
-    		
     	];
 
     	$validator = Validator::make($request->all(), $rules, $messages);
@@ -76,19 +74,16 @@ class GiangVienController extends Controller
 	    if($validator->fails()) {
 	    	 return back()->withInput()->withErrors($validator);
 	    }
-       $temp = DB::table('teacher')->where('ID_Teacher' , $request->inputID_Teacher)->count() ;
+        $temp = DB::table('teacher')->where('ID_Teacher' , $request->inputID_Teacher)->count() ;
         if($temp >0 ) {
             return back()->withInput()->withErrors( 'Mã giảng viên đã tồn tại');
         }
-
-        if($request->inputPermission == "Admin") {
+        //dd($request->inputPermission);
+        if($request->inputPermission == "Giảng viên") {
             $request->inputPermission = 1;
         }
-        else if ($request->inputPermission == "Phòng đào tạo") {
-            $request->inputPermission =2;
-        }
-        else if ($request->inputPermission == "Giảng viên" ) {   
-            $request->inputPermission = 0;
+        elseif($request->inputPermission == "Quản lý phòng học") {
+            $request->inputPermission = 5;
         }
         else {
              return back()->withInput()->withErrors('Chọn lại phân quyền');
@@ -108,25 +103,27 @@ class GiangVienController extends Controller
             $acc->password = bcrypt($request->inputPassword_Teacher);
             $acc->permission = $request->inputPermission;
             $acc->save();
-         }catch(QueryException $e) {
+         }catch(\Exception $e) {
             return back()->withInput()->withErrors('Lỗi thêm tài khoản');
         }
 
-	    $gv = new teacher();
-	    $gv->ID_Teacher = $request->inputID_Teacher;
-	    $gv->Name_Teacher = $request->inputTeacher_name;
-	    $gv->Phone_Teacher = $request->inputPhone_number;
-	    $gv->Email_Teacher = $request->inputEmail_Teacher;
-	    $gv->IS_Delete = 0;
-	    $gv->University_Teacher_Degree = $request->inputTeacher_Rank;
-	    $data = Carbon::createFromFormat('Y-m-d', $request->inputDoB_Teacher)->format('Y-m-d');
-	    $gv->DoB_Teacher = $data;
-	    $gv->ID_Department  = $request->inputID_Department;
-        $gv->ID = $acc->id;
-	    $gv->save();
-       
+        if($request->inputPermission == 1){
+            $count = DB::table('teacher')->where('ID_Teacher', $request->inputID_Teacher)->count();
+            if($count > 0 ) return back()->withErrors('Đã tồn tại mã giảng viên');
 
-
+            $gv = new teacher();
+            $gv->ID_Teacher = $request->inputID_Teacher;
+            $gv->Name_Teacher = $request->inputTeacher_name;
+            $gv->Phone_Teacher = $request->inputPhone_number;
+            $gv->Email_Teacher = $request->inputEmail_Teacher;
+            $gv->IS_Delete = 0;
+            $gv->University_Teacher_Degree = $request->inputTeacher_Rank;
+            $data = Carbon::createFromFormat('Y-m-d', $request->inputDoB_Teacher)->format('Y-m-d');
+            $gv->DoB_Teacher = $data;
+            $gv->ID_Department  = $request->inputID_Department;
+            $gv->ID = $acc->id;
+            $gv->save();
+        }
 	    return redirect('admin/teacher/thongtin')->with('thongbao', 'Thêm giảng viên thành công');
     }
 
@@ -139,7 +136,7 @@ class GiangVienController extends Controller
             'inputPhone_Teacher' => 'required|max:10',
             'inputPermission' => 'required',
             'inputEmail_Teacher' => 'required|email',
-            'inputDoB_Teacher' => 'required',
+            'inputDoB_Teacher' => 'required|date',
             'inputID_Department' => 'required'
         ];
 
@@ -151,11 +148,12 @@ class GiangVienController extends Controller
             'inputEmail_Teacher.required' => 'Email là bắt buộc',
             
             'inputDoB_Teacher.required' => 'Ngày sinh là bắt buộc',
+            'inputDoB_Teacher.date' => 'Ngày sinh là không hợp lệ',
             'inputID_Department.required' => 'Bộ môn là bắt buộc',
 
             'inputName_Teacher.max' => 'Tên giảng viên tối đa 50 kí tự',
             'inputPhone_Teacher.max' => 'Số điện thoại chưa đúng format',
-            'inputEmail_Teacher.email' => 'Địa chỉ email không đúng',
+            'inputEmail_Teacher.email' => 'Địa chỉ email không đúng'
            
 
         ];
@@ -171,17 +169,21 @@ class GiangVienController extends Controller
                 $request->inputPassword = $pass;
             }
 
-            if($request->inputPermission == "Admin") {
-                $request->inputPermission = 4; // Bo mon
+            if($request->inputPermission == "Giảng viên") {
+                $request->inputPermission = 1; // Bo mon
             }
-            else if ($request->inputPermission == "Phòng đào tạo") {
-                $request->inputPermission =2; //Phong dao tao
+            elseif ($request->inputPermission == "Quản lý phòng học") {
+                $request->inputPermission = 5; //Phong dao tao
             }
-            else $request->inputPermission = 1; // Giang vien
+            else return back()->withErrors('Chọn lại phân quyền');
         }
        
 
         $id = $request->inputID_Teacher;
+
+        $count = DB::table('teacher')->where('ID_Teacher', $id)->count();
+        if($count == 0 ) return back()->withErrors('Không tồn tại mã giảng viên');
+
         DB::table('teacher')->where('ID_Teacher', $id)->update(
             ['Name_Teacher' => $request->inputName_Teacher,
             'ID_Teacher' =>$request->inputID_Teacher,

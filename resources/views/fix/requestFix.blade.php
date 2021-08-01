@@ -59,10 +59,10 @@
 	                    <th>Phòng học cũ</th>
 	                    <th>Ca học cũ </th>
 	                    <th>Ngày học cũ</th>
-	                    <th>Tên giảng viên</th>
+	                    <th>Mã giảng viên cũ</th>
 	                    <th>Ca học mới</th>
 	                    <th>Ngày học mới</th>
-	                    <th>Mã giảng viên</th>
+	                    <th>Mã giảng viên mới</th>
 	                    <th width="16%">Xác nhận</th>
 	                    <!-- <th>
 	                    	<button type="submitAccept" class="btn btn-primary">Chấp nhận</button>
@@ -77,10 +77,10 @@
                     <td>{{$fix_index->ID_Module_Class}}</td>
                     <td>{{$fix_index->oldRoom}}</td>
                     <td>{{$fix_index->oldShift}}</td>
-                    <td>{{$fix_index->oldDay}}</td>
+                    <td><?php echo \Carbon\Carbon::parse($fix_index->oldDay)->format('d/m/Y') ;?></td>
                     <td>{{$fix_index->ID_Teacher_Option}}</td>
                     <td>{{$fix_index->newShift}}</td>
-                    <td>{{$fix_index->newDay}}</td>
+                    <td><?php echo \Carbon\Carbon::parse($fix_index->newDay)->format('d/m/Y') ;?></td>
                     <td>{{$fix_index->ID_Teacher_Option}}</td>
                     <td>
                       <button type="button" class="btn btn-success btn-sm"><a href="../fix/xacnhan/{{$fix_index->ID_Fix}}" style = " text-decoration: none; color: white" onclick="return confirm('Xác nhận đồng ý thay đổi giờ giảng?');">Chấp nhận</a></button>

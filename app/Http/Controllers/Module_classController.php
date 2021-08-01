@@ -23,8 +23,23 @@ class Module_classController extends Controller
 											'school_year' =>$school_year, 'teacher' => $teacher] );
     }
 
+    public function getFilterHP($id) {
+       
+        $module = DB::select(DB::raw("SELECT DISTINCT ID_Module,Module_Name FROM module where ID_Department = '".$id."'"));
+        $count =  count($module);
+        if($count == 0 ) {
+            echo "<option value =''>Chọn học phần</option>";
+        }
+        else {
+             echo "<option value =''>Chọn học phần</option>";
+            foreach($module as $md) {
+                echo "<option class = 'option' value = '".$md->ID_Module."''>".$md->Module_Name."</option>";
+            }
+        }
+    }
+
     public function getFilter() {
-    	if(request()->ajax()) {
+    	//if(request()->ajax()) {
 
 	        $md = (!empty($_GET["md"])) ? ($_GET["md"]) : ('');
 	        $dp = (!empty($_GET["dp"])) ? ($_GET["dp"]) : ('');
@@ -34,7 +49,8 @@ class Module_classController extends Controller
             $sy = (!empty($_GET["sy"])) ? ($_GET["sy"]) : ('');
             $kind = (!empty($_GET["kind"])) ? ($_GET["kind"]) : ('');
 
-        	$data = DB::table('module_class')->join('module', 'module_class.ID_Module' ,'=', 'module.ID_Module')->when($md,function($query,$md) {
+        	$data = DB::table('module_class')->join('module', 'module_class.ID_Module' ,'=', 'module.ID_Module')
+            ->when($md,function($query,$md) {
         		return $query->where('module_class.ID_Module',$md);
         	})->when($cd,function($query,$cd) {
         		return $query->where('module.Credit',$cd);
@@ -53,16 +69,38 @@ class Module_classController extends Controller
                 if($kind == "BT") {
                     return $query->where('module_class.Module_Class_Name', 'like', '%BT%');
                 }
-                else if($kind == "TH"){
-                    return $query->where('module_class.Module_Class_Name', 'like', '%.1%');
+                elseif($kind == "TH"){
+                    return $query->where([
+                                    ['module_class.Module_Class_Name', 'like', '%.1%'],
+                                    ['module_class.Module_Class_Name', 'not like', '%BT%'],
+                                    ['module_class.Module_Class_Name', 'not like', '%TT%'],
+                                ])
+                                ->orWhere([
+                                    ['module_class.Module_Class_Name', 'like', '%TH%'],
+                                    ['module_class.Module_Class_Name', 'not like', '%BT%'],
+                                    ['module_class.Module_Class_Name', 'not like', '%TT%'],
+                                ]);
+
+
                 }
-                else if($kind == "TL") {
+                elseif($kind == "TL") {
                       return $query->where('module_class.Module_Class_Name', 'like', '%TL%');
                 }
-                else return $query->where('module_class.Module_Class_Name', 'not like', '%.1%')->where('module_class.Module_Class_Name', 'not like', '%BT%')->where('module_class.Module_Class_Name', 'not like', '%TL%');
-            })->get();
+                elseif($kind == "DA") {
+                      return $query->where('module_class.Module_Class_Name', 'like', '%DA%');
+                }
+                elseif($kind == "TT") {
+                      return $query->where('module_class.Module_Class_Name', 'like', '%TT%');
+                }
+                else return $query->where('module_class.Module_Class_Name', 'not like', '%.1%')
+                                    ->where('module_class.Module_Class_Name', 'not like', '%TH%')   
+                                    ->where('module_class.Module_Class_Name', 'not like', '%BT%')
+                                    ->where('module_class.Module_Class_Name', 'not like', '%TL%')
+                                    ->where('module_class.Module_Class_Name', 'not like', '%DA%')
+                                    ->where('module_class.Module_Class_Name', 'not like', '%TT%');
+            })->Paginate(10);
 			
-			return Response::json($data);
-		}
+			return view('module_class.module_classView')->with(['module_class' => $data]);
+		//}
     }
 }
