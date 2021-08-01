@@ -22,8 +22,8 @@ class RequestFixController extends Controller
         
     	$now = Carbon\Carbon::now();
     	echo $now->format('d m y ');
-    	DB::table('fix')->where('ID_Fix','=',$id)->update(['Time_Accept_Request'=>$now]);
-    	DB::table('fix')->where('ID_Fix','=',$id)->update(['Status_Fix'=>'Chấp nhận']);
+    	// DB::table('fix')->where('ID_Fix','=',$id)->update(['Time_Accept_Request'=>$now]);
+    	// DB::table('fix')->where('ID_Fix','=',$id)->update(['Status_Fix'=>'Chấp nhận']);
         $m = 'Yêu cầu của bạn được chấp nhận';
 
         //Thuc hien thay doi vao bang schedules
@@ -31,18 +31,18 @@ class RequestFixController extends Controller
         $dataSchedules = DB::table('schedules')->where('ID_Schedules','=',$dataFix[0]->ID_Schedules)->get();
 
         //dd($dataFix);
-        DB::table('schedules')->where('ID_Schedules','=',$dataFix[0]->ID_Schedules)->update([
-            'Shift_Schedules' => $dataFix[0]->Shift_Fix,
-            'Day_Schedules' => $dataFix[0]->Day_Fix,
+        // DB::table('schedules')->where('ID_Schedules','=',$dataFix[0]->ID_Schedules)->update([
+        //     'Shift_Schedules' => $dataFix[0]->Shift_Fix,
+        //     'Day_Schedules' => $dataFix[0]->Day_Fix,
         
-        ]);
+        // ]);
 
-        DB::table('fix')->where('ID_Fix','=',$dataFix[0]->ID_Fix)->update([
-            'Shift_Fix' => $dataSchedules[0]->Shift_Schedules,
-            'Day_Fix' => $dataSchedules[0]->Day_Schedules
-        ]);
+        // DB::table('fix')->where('ID_Fix','=',$dataFix[0]->ID_Fix)->update([
+        //     'Shift_Fix' => $dataSchedules[0]->Shift_Schedules,
+        //     'Day_Fix' => $dataSchedules[0]->Day_Schedules
+        // ]);
 
-        //$this->sendMail($id,$m);
+        $this->sendMail($id,$m);
     	return back()->with('thongbao','Chấp nhận thành công');
     }
 
