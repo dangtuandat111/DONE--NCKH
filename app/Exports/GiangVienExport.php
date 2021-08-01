@@ -21,7 +21,7 @@ class GiangVienExport implements FromCollection{
     public function collection()
     {
         //
-         $file = public_path();
+        $file = public_path();
         $file_path = "../".$file."File_Export/MAU_THEM_GIANG_VIEN.xlsx";
 
         return Response::downloand($file,"MAU_THEM_GIANG_VIEN.xlsx");

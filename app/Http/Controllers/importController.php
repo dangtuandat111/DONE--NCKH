@@ -63,7 +63,7 @@ class importController extends Controller
             Excel::import($import,$request->giangvien);
             
             // return Redirect('admin/import/giangvien')->withErrors("Lỗi");
-            return back();
+            //return back();
            
     }
 

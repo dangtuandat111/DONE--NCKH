@@ -127,7 +127,7 @@ class ScheduleImport implements ToCollection,WithMultipleSheets,SkipsUnknownShee
             // DB::table('module_class')->insert($this->arrayModuleClass);
             // DB::table('schedules')->insert($this->arraySchedules);
             
-            return back()->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess.' Số học phần chưa có ngày học: '.$this->numberBlank);
+            // return back()->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess.' Số học phần chưa có ngày học: '.$this->numberBlank);
         }
     }
 
