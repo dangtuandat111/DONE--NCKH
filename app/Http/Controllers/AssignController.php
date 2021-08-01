@@ -106,7 +106,6 @@ class AssignController extends Controller
             //Luu qua trinh phan giang
             
             DB::table('module_class')->where('ID_Module_Class', $key2)->update(['ID_Teacher' => $magv]);
-        
             $numberInsertedValue++;
             //Ket thuc luu qua trinh phan giang
         }
