@@ -15,7 +15,7 @@ class ExportController extends Controller
 	    $path = base_path('File_Export\\'.$filename);
         //$path = app_path('File_Export\\'.$filename);
         
-        dd($path);
+        //dd($path);
 	    // Download file with custom headers
 	    return response()->download($path, $filename, [
 	        'Content-Type' => 'application/vnd.ms-excel',
