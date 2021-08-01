@@ -42,7 +42,7 @@ class RequestFixController extends Controller
             'Day_Fix' => $dataSchedules[0]->Day_Schedules
         ]);
 
-        $this->sendMail($id,$m);
+        //$this->sendMail($id,$m);
     	return back()->with('thongbao','Chấp nhận thành công');
     }
 
@@ -54,10 +54,10 @@ class RequestFixController extends Controller
     	DB::table('fix')->where('ID_Fix','=',$id)->update(['Time_Accept_Request' => $now]);
     	DB::table('fix')->where('ID_Fix','=',$id)->update(['Status_Fix'=>'Từ chối']);
         $m = 'Yêu cầu của bạn bị từ chối';
-        $status = $this->sendMail($id,$m);
-        if($status != 'Thành công') {
-            return back()->withError($status);
-        }
+        // $status = $this->sendMail($id,$m);
+        // if($status != 'Thành công') {
+        //     return back()->withError($status);
+        // }
     	else return back()->with('thongbao','Từ chối thành công');
     }
 
