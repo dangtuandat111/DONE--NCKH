@@ -17,47 +17,37 @@ class RequestFixController extends Controller
     }
 
     public function Accept($id) {
-    	// echo "da vao";
-    	// echo $id;
-        
     	$now = Carbon\Carbon::now();
     	echo $now->format('d m y ');
-    	// DB::table('fix')->where('ID_Fix','=',$id)->update(['Time_Accept_Request'=>$now]);
-    	// DB::table('fix')->where('ID_Fix','=',$id)->update(['Status_Fix'=>'Chấp nhận']);
+    	DB::table('fix')->where('ID_Fix','=',$id)->update(['Time_Accept_Request'=>$now]);
+    	DB::table('fix')->where('ID_Fix','=',$id)->update(['Status_Fix'=>'Chấp nhận']);
         $m = 'Yêu cầu của bạn được chấp nhận';
-
         //Thuc hien thay doi vao bang schedules
         $dataFix = DB::table('fix')->where('ID_Fix','=',$id)->get();
         $dataSchedules = DB::table('schedules')->where('ID_Schedules','=',$dataFix[0]->ID_Schedules)->get();
-
         //dd($dataFix);
-        // DB::table('schedules')->where('ID_Schedules','=',$dataFix[0]->ID_Schedules)->update([
-        //     'Shift_Schedules' => $dataFix[0]->Shift_Fix,
-        //     'Day_Schedules' => $dataFix[0]->Day_Fix,
+        DB::table('schedules')->where('ID_Schedules','=',$dataFix[0]->ID_Schedules)->update([
+            'Shift_Schedules' => $dataFix[0]->Shift_Fix,
+            'Day_Schedules' => $dataFix[0]->Day_Fix,
         
-        // ]);
-
-        // DB::table('fix')->where('ID_Fix','=',$dataFix[0]->ID_Fix)->update([
-        //     'Shift_Fix' => $dataSchedules[0]->Shift_Schedules,
-        //     'Day_Fix' => $dataSchedules[0]->Day_Schedules
-        // ]);
-
+        ]);
+        DB::table('fix')->where('ID_Fix','=',$dataFix[0]->ID_Fix)->update([
+            'Shift_Fix' => $dataSchedules[0]->Shift_Schedules,
+            'Day_Fix' => $dataSchedules[0]->Day_Schedules
+        ]);
         $this->sendMail($id,$m);
     	return back()->with('thongbao','Chấp nhận thành công');
     }
-
     public function Decline($id) {
-    	// echo "da vao";
-    	// echo $id;
     	$now = Carbon\Carbon::now();
     	echo $now->format('d m y ');
     	DB::table('fix')->where('ID_Fix','=',$id)->update(['Time_Accept_Request' => $now]);
     	DB::table('fix')->where('ID_Fix','=',$id)->update(['Status_Fix'=>'Từ chối']);
         $m = 'Yêu cầu của bạn bị từ chối';
-        // $status = $this->sendMail($id,$m);
-        // if($status != 'Thành công') {
-        //     return back()->withError($status);
-        // }
+        $status = $this->sendMail($id,$m);
+        if($status != 'Thành công') {
+            return back()->withError($status);
+        }
     	 return back()->with('thongbao','Từ chối thành công');
     }
 

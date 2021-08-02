@@ -119,15 +119,15 @@ class ScheduleImport implements ToCollection,WithMultipleSheets,SkipsUnknownShee
             return back()->withErrors($status.": Dòng ".$dong." - Sheet: ".($this->sheet-1))->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess.' Số học phần chưa có ngày học: '.$this->numberBlank);
         }
     	else {
-            echo $this->numberBlank."<br >";
-            echo $this->numberSuccess;
-            echo '<pre>'; print_r($this->arraySchedules); echo '</pre>'; 
-            echo '<pre>'; print_r($this->arrayModuleClass); echo '</pre>';  echo "DHet";
+            // echo $this->numberBlank."<br >";
+            // echo $this->numberSuccess;
+            // echo '<pre>'; print_r($this->arraySchedules); echo '</pre>'; 
+            // echo '<pre>'; print_r($this->arrayModuleClass); echo '</pre>';  echo "DHet";
 
-            // DB::table('module_class')->insert($this->arrayModuleClass);
-            // DB::table('schedules')->insert($this->arraySchedules);
+            DB::table('module_class')->insert($this->arrayModuleClass);
+            DB::table('schedules')->insert($this->arraySchedules);
             
-            // return back()->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess.' Số học phần chưa có ngày học: '.$this->numberBlank);
+             return back()->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess.' Số học phần chưa có ngày học: '.$this->numberBlank);
         }
     }
 

@@ -10,7 +10,7 @@ use DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
-use App\models\modules;
+use App\Models\modules;
 
 
 class HocPhanController extends Controller
