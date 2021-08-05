@@ -119,15 +119,15 @@ class ScheduleImport implements ToCollection,WithMultipleSheets,SkipsUnknownShee
             return back()->withErrors($status.": Dòng ".$dong." - Sheet: ".($this->sheet-1))->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess.' Số học phần chưa có ngày học: '.$this->numberBlank);
         }
     	else {
-            // echo $this->numberBlank."<br >";
-            // echo $this->numberSuccess;
-            // echo '<pre>'; print_r($this->arraySchedules); echo '</pre>'; 
-            // echo '<pre>'; print_r($this->arrayModuleClass); echo '</pre>';  echo "DHet";
+            echo $this->numberBlank."<br >";
+            echo $this->numberSuccess;
+            echo '<pre>'; print_r($this->arraySchedules); echo '</pre>'; 
+            echo '<pre>'; print_r($this->arrayModuleClass); echo '</pre>';  echo "DHet";
 
-            DB::table('module_class')->insert($this->arrayModuleClass);
-            DB::table('schedules')->insert($this->arraySchedules);
+            // DB::table('module_class')->insert($this->arrayModuleClass);
+            // DB::table('schedules')->insert($this->arraySchedules);
             
-             return back()->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess.' Số học phần chưa có ngày học: '.$this->numberBlank);
+            return back()->with('thongbao','Số trường thêm thành công: '.$this->numberSuccess.' Số học phần chưa có ngày học: '.$this->numberBlank);
         }
     }
 
@@ -315,21 +315,30 @@ class ScheduleImport implements ToCollection,WithMultipleSheets,SkipsUnknownShee
         try{
             $check = explode("-",$tenhp);
             if(count($check) == 4) {
+                //dd($tenhp);
+                // Hiện tại: Tên LHP - kì học - năm học (kiểu học phần) 
                 $tenmon = explode("-",$tenhp)[0];
                 $kihoc = explode("-",$tenhp)[1];
                 $nam = explode("-",$tenhp)[2];
                 $dothoc = explode("-",$tenhp)[3];
-                //dd($dothoc);
+                
                 $kieukt = explode(" ",$dothoc)[1];
                 $dothoc = explode(" ",$dothoc)[0];
 
+                // File 2021-2022 :Tên LHP - kì học - đợt học - năm học(kiểu học phần)
+                // $tenmon = explode("-",$tenhp)[0];
+                // $kihoc = explode("-",$tenhp)[1];
+                // $dothoc = explode("-",$tenhp)[2];
+                // $nam = explode("-",$tenhp)[3];
+
+                // $kieukt  = explode("(",$nam)[1];
+                // $nam  = explode("(",$nam)[0];
+
+                // $kieukt = "(".$kieukt;
+
                 $ID_Module_Class = $mahp."-".$kihoc."-".$nam."-".$dothoc." ".$kieukt;
-                //Chưa kiểm tra đọt học
-                //$contains = 
-                // if(Str::contains($nam,'.')) {
-                //     $dothoc = explode(" ",$nam)[1];
-                //     $nam = explode(" ",$nam)[0];
-                // }
+                //dd($ID_Module_Class);
+
             }
             elseif (count($check) == 3){
                 $tenmon = explode("-",$tenhp)[0];

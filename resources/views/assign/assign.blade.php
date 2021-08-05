@@ -133,7 +133,7 @@
                       <div class="form-group">
                         
                         <div class="form-check">
-                          <input class="form-check-input" type="radio" name="Option_GV" value = "Value_GV1" checked>
+                          <input class="form-check-input" type="radio" name="Option_GV" value = "Value_GV1" checked >
                           <label class="form-check-label">Chọn giảng viên bộ môn</label>
                         </div>
                         <div class="form-check">
@@ -185,8 +185,8 @@
                           @foreach($schedules as $sch)
                             
                           <tr>
-                              <th>
-                                  <input type ="checkbox"  name = 
+                              <th style = "width:5%">
+                                  <input type ="checkbox"  style="height:20px; width:20px; vertical-align: middle;" name = 
                                       <?php $a = str_replace(' ', '/', $sch->ID_Module_Class); echo $a; ?> value = 
                                       <?php $a = str_replace(' ', '/', $sch->ID_Module_Class); echo $a; ?>>
                                   </th>

@@ -161,7 +161,7 @@ class HocPhanController extends Controller
 				return back()->withInput()->withErrors( 'Nhập lại số tiết thực hành');
 			}
 	    }
-
+	    $id = $request->inputID_module;
 	    try {
 	    	DB::table('module')->where('id_module', $id)->update(
 				['semester' => $request->inputSemester,
