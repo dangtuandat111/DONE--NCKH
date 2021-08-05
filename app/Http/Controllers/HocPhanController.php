@@ -21,7 +21,7 @@ class HocPhanController extends Controller
 		$modules = DB::table('module')->where('ID_Module','like','MHT%')->Paginate(10);
 		$credits = DB::select(DB::raw("SELECT DISTINCT Credit FROM module ORDER BY Credit asc"));
 		$departments = DB::select(DB::raw("SELECT ID_Department,Department_Name FROM department"));
-		$module = DB::select(DB::raw("SELECT DISTINCT ID_Module,Module_Name FROM module where ID_Department = 'MHT' "));
+		$module = DB::select(DB::raw("SELECT DISTINCT ID_Module,Module_Name FROM module where ID_Department = 'MHT' order by Module_Name "));
 
 		return view ('modules.thongtin', ['modules' => $modules,'credits' => $credits,
 											'module' => $module,'departments' => $departments] );
