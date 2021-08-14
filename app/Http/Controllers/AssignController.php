@@ -70,7 +70,7 @@ class AssignController extends Controller
 			$key2 = $test1." ".$test2;
 			$key2 = str_replace('_', '.', $key2);
             //Ket thuc lay lai ma hoc phan
-            echo $test1."<br />".$test2."<br />".$key2."<br />";
+            //echo $test1."<br />".$test2."<br />".$key2."<br />";
             //Kiem tra du lieu
             if($magv == '') {
                 $Error = 'Thiếu tên giảng viên.';
@@ -91,27 +91,29 @@ class AssignController extends Controller
                 continue;
             }
             //Ket thuc kiem tra du lieu
-            // foreach($sch_gv as $value1) {
-            //     foreach ($sch as  $value2) {
-            //         //dd($value1);
-            //         if(($value1->Day_Schedules == $value2->Day_Schedules 
-            //             and $value1->Shift_Schedules == $value2->Shift_Schedules) 
-            //             and $value1->Shift_Schedules != 0 )
-            //         {
-            //             $Error = "Lỗi ".$value1->ID_Module_Class." Thời gian: ".$value1->Day_Schedules.";Ca: ".$value1->Shift_Schedules." Trùng với môn: ".$value2->ID_Module_Class.";Ca: ".$value2->Shift_Schedules;
-            //             break 3;
-            //         }
-            //     }
-            // }
+            
+            foreach($sch_gv as $value1) {
+                foreach ($sch as  $value2) {
+                    //dd($value1);
+                    if(($value1->Day_Schedules == $value2->Day_Schedules 
+                        and $value1->Shift_Schedules == $value2->Shift_Schedules) 
+                        and $value1->Shift_Schedules != 0 )
+                    {
+                        $Error = "Lỗi ".$value1->ID_Module_Class." Thời gian: ".$value1->Day_Schedules.";Ca: ".$value1->Shift_Schedules." Trùng với môn: ".$value2->ID_Module_Class.";Ca: ".$value2->Shift_Schedules;
+                        //$listError->push($Error);
+                        break 2;
+                    }
+                }
+            }
 
 
             //Luu qua trinh phan giang
             
-            //DB::table('module_class')->where('ID_Module_Class', $key2)->update(['ID_Teacher' => $magv]);
+            DB::table('module_class')->where('ID_Module_Class', $key2)->update(['ID_Teacher' => $magv]);
             $numberInsertedValue++;
             //Ket thuc luu qua trinh phan giang
         }
-
+        //dd($listError);
         if($Error != '') {
             return back()->withErrors($Error)->with('thongbao','Thành công: '.$numberInsertedValue)->withInput();
         }
@@ -233,7 +235,7 @@ class AssignController extends Controller
                                 ->where('module_class.Module_Class_Name', 'not like', '%TT%');
             })->when($dh,function($query,$dh) {
                 if($dh > 1 ) return $query->where('module_class.ID_Module_Class','like','%-'.$dh.' (%');
-            })->where('ID_Teacher','=',NULL)->where('ID_Module_Class','like','MHT%')->paginate(10);
+            })->where('ID_Teacher','=',NULL)->where('ID_Module_Class','like','MHT%')->paginate(20);
             
 
             $teacher = DB::table('teacher')->where('Is_Delete','=','0')->where('ID_Department','=','MHT')->get();

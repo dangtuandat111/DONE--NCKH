@@ -62,7 +62,7 @@
              	@foreach($schedules as $sch) 
              	<tr>
                 	<th>
-                   		<input type="checkbox" name=<?php $a = str_replace(' ', '/', $sch->ID_Module_Class); echo $a; ?> value=<?php $a = str_replace(' ', '/', $sch->ID_Module_Class); echo $a; ?>>
+                   		<input type="checkbox" style="height:20px; width:20px; vertical-align: middle;" name=<?php $a = str_replace(' ', '/', $sch->ID_Module_Class); echo $a; ?> value=<?php $a = str_replace(' ', '/', $sch->ID_Module_Class); echo $a; ?>>
                  	</th>
 		                <td>{{$sch->ID_Module_Class}}</td>
 		                <td>{{$sch->Module_Class_Name}}</td>

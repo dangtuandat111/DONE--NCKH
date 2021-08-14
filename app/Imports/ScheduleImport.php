@@ -177,6 +177,13 @@ class ScheduleImport implements ToCollection,WithMultipleSheets,SkipsUnknownShee
     		$kieu = $this->goc_kieu;
     	}
         //Ket thuc neu
+        $this->goc_tenhp =$tenhp;
+        $this->goc_kieu = $kieu;
+        $this->goc_dkien = $dukien ;
+        $this->goc_dki = $dangki;
+        $this->goc_mahp =$mahp;
+        $this->goc_thoigian = $thoigian;
+        $this->goc_sotinchi = $sotinchi;
 
         //Lay thoi gian 
         //Khong kiem tra thoi gian co hop le hay khong
@@ -311,11 +318,12 @@ class ScheduleImport implements ToCollection,WithMultipleSheets,SkipsUnknownShee
 
         //Đọc tên lớp học phần
         //Tên học phần-Kì học-Năm học 'Loại học phần'
-        //dd($tenhp);
+
+
         try{
             $check = explode("-",$tenhp);
             if(count($check) == 4) {
-                //dd($tenhp);
+                // dd($tenhp);
                 // Hiện tại: Tên LHP - kì học - năm học (kiểu học phần) 
                 $tenmon = explode("-",$tenhp)[0];
                 $kihoc = explode("-",$tenhp)[1];
@@ -336,8 +344,9 @@ class ScheduleImport implements ToCollection,WithMultipleSheets,SkipsUnknownShee
 
                 // $kieukt = "(".$kieukt;
 
-                $ID_Module_Class = $mahp."-".$kihoc."-".$nam."-".$dothoc." ".$kieukt;
-                //dd($ID_Module_Class);
+                // $ID_Module_Class = $mahp."-".$kihoc."-".$nam."-".$dothoc." ".$kieukt;
+                // //dd($ID_Module_Class);
+                // $tenhp = $tenmon."-".$kihoc."-".$nam."-".$dothoc." ".$kieukt;
 
             }
             elseif (count($check) == 3){
@@ -350,12 +359,7 @@ class ScheduleImport implements ToCollection,WithMultipleSheets,SkipsUnknownShee
                 $nam = explode(" ",$nam)[0];
 
                 $ID_Module_Class = $mahp."-".$kihoc."-".$nam." ".$kieukt;
-                //Chưa kiểm tra đọt học
-                //$contains = 
-                // if(Str::contains($nam,'.')) {
-                //     $dothoc = explode(" ",$nam)[1];
-                //     $nam = explode(" ",$nam)[0];
-                // }
+                
             }
             else return 'Lỗi tên học phần '.$tenhp;
             
@@ -371,6 +375,7 @@ class ScheduleImport implements ToCollection,WithMultipleSheets,SkipsUnknownShee
         //Đọc số sinh viên dự kiến
         $Number_Plan =  $dukien;
         //Đọc số sinh viên đăng kí
+
         $Number_Reality = $dangki;
         //Đọc năm học
         $School_Year = $kihoc."-".$nam;
@@ -379,16 +384,7 @@ class ScheduleImport implements ToCollection,WithMultipleSheets,SkipsUnknownShee
        
         //Đọc mã giảng viên
         //$ID_Teacher = $tengv;
-
-        $this->goc_malophp = $ID_Module_Class;
-        $this->goc_tenhp =$Module_Class_Name;
-        $this->goc_dkien = $Number_Plan ;
-        $this->goc_dki = $Number_Reality;
-        $this->goc_school = $School_Year;
-        $this->goc_mahp =$ID_Module;
-        $this->goc_thoigian = $thoigian;
-        $this->goc_sotinchi = $sotinchi;
-        $this->goc_kieu = $kieu;
+       
         //$this->goc_gv =  $ID_Teacher;
 
         // echo "<br />"."Dữ liệu 1 dòng là: ";
@@ -421,14 +417,15 @@ class ScheduleImport implements ToCollection,WithMultipleSheets,SkipsUnknownShee
         $count_md = DB::table('module_class')->where('ID_Module_Class','=', $ID_Module_Class)->count();
         //Hết lấy thông tin lớp học phần
 
-        //Lưu dữ liệu lớp học phần
+        //Lưu dữ liệu lớp học phần 'Number_Reality' => $Number_Reality,
+        //if($ID_Module_Class == "MHT02.3-1-21 -1  (N24)") return 'loi';
         try {
             if($count_md == 0) {
                 DB::table('module_class')->insert(
                 [  'ID_Module_Class' => $ID_Module_Class,
                     'Module_Class_Name' => $Module_Class_Name,
                     'Number_Plan' => $Number_Plan,
-                    'Number_Reality' => $Number_Reality,
+                    'Number_Reality' => NULL,
                     'School_Year' => $School_Year,
                     'ID_Module' => $ID_Module,
                     ]
@@ -454,7 +451,7 @@ class ScheduleImport implements ToCollection,WithMultipleSheets,SkipsUnknownShee
             }
             
         }catch (Exception $e) {
-            return 'Lỗi khi thêm học phần.';
+            return 'Lỗi khi thêm học phần '.$ID_Module_Class.' '.$e->getMessage();
         }
         //Hết lưu dữ liệu lớp học phần
 
