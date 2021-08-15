@@ -325,28 +325,28 @@ class ScheduleImport implements ToCollection,WithMultipleSheets,SkipsUnknownShee
             if(count($check) == 4) {
                 // dd($tenhp);
                 // Hiện tại: Tên LHP - kì học - năm học (kiểu học phần) 
-                $tenmon = explode("-",$tenhp)[0];
-                $kihoc = explode("-",$tenhp)[1];
-                $nam = explode("-",$tenhp)[2];
-                $dothoc = explode("-",$tenhp)[3];
-                
-                $kieukt = explode(" ",$dothoc)[1];
-                $dothoc = explode(" ",$dothoc)[0];
-
-                // File 2021-2022 :Tên LHP - kì học - đợt học - năm học(kiểu học phần)
                 // $tenmon = explode("-",$tenhp)[0];
                 // $kihoc = explode("-",$tenhp)[1];
-                // $dothoc = explode("-",$tenhp)[2];
-                // $nam = explode("-",$tenhp)[3];
+                // $nam = explode("-",$tenhp)[2];
+                // $dothoc = explode("-",$tenhp)[3];
+                
+                // $kieukt = explode(" ",$dothoc)[1];
+                // $dothoc = explode(" ",$dothoc)[0];
 
-                // $kieukt  = explode("(",$nam)[1];
-                // $nam  = explode("(",$nam)[0];
+                // File 2021-2022 :Tên LHP - kì học - đợt học - năm học(kiểu học phần)
+                $tenmon = explode("-",$tenhp)[0];
+                $kihoc = explode("-",$tenhp)[1];
+                $dothoc = explode("-",$tenhp)[2];
+                $nam = explode("-",$tenhp)[3];
 
-                // $kieukt = "(".$kieukt;
+                $kieukt  = explode("(",$nam)[1];
+                $nam  = explode("(",$nam)[0];
 
-                // $ID_Module_Class = $mahp."-".$kihoc."-".$nam."-".$dothoc." ".$kieukt;
-                // //dd($ID_Module_Class);
-                // $tenhp = $tenmon."-".$kihoc."-".$nam."-".$dothoc." ".$kieukt;
+                $kieukt = "(".$kieukt;
+
+                $ID_Module_Class = $mahp."-".$kihoc."-".$nam."-".$dothoc." ".$kieukt;
+                //dd($ID_Module_Class);
+                $tenhp = $tenmon."-".$kihoc."-".$nam."-".$dothoc." ".$kieukt;
 
             }
             elseif (count($check) == 3){
