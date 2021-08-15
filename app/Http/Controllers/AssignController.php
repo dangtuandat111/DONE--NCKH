@@ -92,23 +92,22 @@ class AssignController extends Controller
             }
             //Ket thuc kiem tra du lieu
             
-            foreach($sch_gv as $value1) {
-                foreach ($sch as  $value2) {
-                    //dd($value1);
-                    if(($value1->Day_Schedules == $value2->Day_Schedules 
-                        and $value1->Shift_Schedules == $value2->Shift_Schedules) 
-                        and $value1->Shift_Schedules != 0 )
-                    {
-                        $Error = "Lỗi ".$value1->ID_Module_Class." Thời gian: ".$value1->Day_Schedules.";Ca: ".$value1->Shift_Schedules." Trùng với môn: ".$value2->ID_Module_Class.";Ca: ".$value2->Shift_Schedules;
-                        //$listError->push($Error);
-                        break 2;
-                    }
-                }
-            }
+            // foreach($sch_gv as $value1) {
+            //     foreach ($sch as  $value2) {
+            //         //dd($value1);
+            //         if(($value1->Day_Schedules == $value2->Day_Schedules 
+            //             and $value1->Shift_Schedules == $value2->Shift_Schedules) 
+            //             and $value1->Shift_Schedules != 0 )
+            //         {
+            //             $Error = "Lỗi ".$value1->ID_Module_Class." Thời gian: ".$value1->Day_Schedules.";Ca: ".$value1->Shift_Schedules." Trùng với môn: ".$value2->ID_Module_Class.";Ca: ".$value2->Shift_Schedules;
+            //             //$listError->push($Error);
+            //             break 2;
+            //         }
+            //     }
+            // }
 
 
             //Luu qua trinh phan giang
-            
             DB::table('module_class')->where('ID_Module_Class', $key2)->update(['ID_Teacher' => $magv]);
             $numberInsertedValue++;
             //Ket thuc luu qua trinh phan giang
