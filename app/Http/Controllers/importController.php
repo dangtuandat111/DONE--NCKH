@@ -13,6 +13,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 //use Excel;
 use App\Imports\ScheduleImport;
 use App\Imports\teacherImport;
+use App\Imports\newImport;
 use Validator;
 
 use Maatwebsite\Excel\Exceptions;
@@ -37,9 +38,9 @@ class importController extends Controller
         return view('import.importTeacher');
     }
 
-    //  public function getRoom() {
-    //     return view('import.importRoom');
-    // }
+     public function getRoom() {
+        return view('import.importRoom');
+    }
 
     public function postTeachers(Request $request) {
             $import = new teacherImport();
@@ -67,8 +68,9 @@ class importController extends Controller
            
     }
 
-    public function postRoom() {
-        echo "da vao";
+    public function postRoom(Request $request) {
+        $import = new newImport();
+        Excel::import($import,$request->hocphan);
     }
 
     public function postModules_Class(Request $request) {

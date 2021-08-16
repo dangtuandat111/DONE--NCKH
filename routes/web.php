@@ -29,6 +29,7 @@ Route::get('/',function() {
 
 Route::group(['middleware' => 'guest'] , function() {
 	Route::match(['get','post'],'login', ['as' => 'login', 'uses' =>'App\Http\Controllers\LoginController@index']);
+	Route::match(['get','post'],'resetPass', ['as' => 'login', 'uses' =>'App\Http\Controllers\LoginController@resetPass']);
 });
 
 Route::group(['middleware' => 'auth' ], function() {
@@ -109,6 +110,8 @@ Route::group(['middleware' => 'auth' ], function() {
 
 		//Test loi
 		Route::get('testData','App\Http\Controllers\ThongKeController@testLoi');
+		Route::get('lich','App\Http\Controllers\importController@getRoom');
+		Route::post('lich','App\Http\Controllers\importController@postRoom');
 	});
 	Route::get('fullcalendar','App\Http\Controllers\ScheduleController@getAll');
 	Route::get('calendar','App\Http\Controllers\ScheduleController@getOne');

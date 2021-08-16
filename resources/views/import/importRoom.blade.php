@@ -27,7 +27,7 @@
             <!-- Default box -->
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Thêm phòng học</h3>
+                <h3 class="card-title">Thêm lich</h3>
 
                 <div class="card-tools">
                 </div>
@@ -39,7 +39,7 @@
 	                    <div class="modal-content">
 	                        <div class="modal-body">
 
-	                            <form action="{{ url('/admin/import/hocphan') }}" method="POST" role="form" enctype="multipart/form-data">
+	                            <form action="{{ url('/admin/lich') }}" method="POST" role="form" enctype="multipart/form-data">
 	                                <legend>FILE</legend>
 	                                @csrf
 	                                <div class="form-group">

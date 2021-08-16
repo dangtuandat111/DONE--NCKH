@@ -234,7 +234,7 @@ class AssignController extends Controller
                                 ->where('module_class.Module_Class_Name', 'not like', '%TT%');
             })->when($dh,function($query,$dh) {
                 if($dh > 1 ) return $query->where('module_class.ID_Module_Class','like','%-'.$dh.' (%');
-            })->where('ID_Teacher','=',NULL)->where('ID_Module_Class','like','MHT%')->paginate(10);
+            })->where('ID_Teacher','=',NULL)->where('ID_Module_Class','like','MHT%')->paginate(30);
             
 
             $teacher = DB::table('teacher')->where('Is_Delete','=','0')->where('ID_Department','=','MHT')->get();

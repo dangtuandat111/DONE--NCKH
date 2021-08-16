@@ -14,9 +14,12 @@ use DB;
 use Illuminate\Database\MySqlConnection;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+
+use Illuminate\Support\Facades\Mail;
 class LoginController extends Controller
 {
     //Ham de goi trang login trong thu muc admin
+    public $email ;
 	public function index(Request $request) {
         if($request->isMethod('post')){
             // Kiểm tra dữ liệu nhập vào
@@ -46,7 +49,7 @@ class LoginController extends Controller
                   
                 } else {
                     
-                    return view('admin.login')->withErrors("Email or password is not correct");
+                    return view('admin.login')->withErrors("Email hoặc mật khẩu không đúng");
                   
                 }
                 
@@ -77,7 +80,89 @@ class LoginController extends Controller
         return redirect('/login');
     }
 
+    public function resetPass(Request $request) {
+        if($request->isMethod('post')){
+            $rules = [
+                'Email' =>'required|email|max:255', // chi gom chu hoac so va khong ket thuc bang so
+                'Old_Password' => 'required|min:1|regex:/(^([a-zA-z\d]+)(\d+)?$)/',
+                'Password' => 'required|min:1|regex:/(^([a-zA-z\d]+)(\d+)?$)/',
+                'Confirm_Password' => 'required|min:1|regex:/(^([a-zA-z\d]+)(\d+)?$)/|same:Password'
+            ];
+            $messages = [
+                'Email.required' => 'Email là trường bắt buộc',
+                'Email.max' => 'Tên email không quá 255 ký tự',
+                'Email.email' => 'Email không đúng định dạng',
 
+                'Old_Password.required' => 'Mật khẩu là trường bắt buộc',
+                'Old_Password.min' => 'Mật khẩu phải chứa ít nhất 1 ký tự',
+                'Old_Password.regex' => 'Mật khẩu không đúng định dạng',
+
+                'Password.required' => 'Mật khẩu là trường bắt buộc',
+                'Password.min' => 'Mật khẩu phải chứa ít nhất 1 ký tự',
+                'Password.regex' => 'Mật khẩu không đúng định dạng',
+
+                'Confirm_Password.required' => 'Mật khẩu là trường bắt buộc',
+                'Confirm_Password.min' => 'Mật khẩu phải chứa ít nhất 1 ký tự',
+                'Confirm_Password.regex' => 'Mật khẩu không đúng định dạng',
+                'Confirm_Password.same' => 'Mật khẩu không khớp'
+            ];
+            $validator = Validator::make($request->all(), $rules, $messages);
+            
+            
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            } else {
+                if ( $this->check($request->Email,$request->Old_Password) ) {
+                    $this->sendMail($request->Email);
+                    DB::table('account')->where('email',$request->Email)->update([
+                        'password' => bcrypt($request->Password)
+                    ]);
+                    return redirect('/login');
+                  
+                } else {
+                    return back()->withInput()->withErrors("Email hoặc mật khẩu không đúng");
+                  
+                }
+                
+            }
+        }
+        else return view('admin.resetPassword');
+    }
+
+     public function sendMail($mail) {
+        $this->email = $mail;
+
+        Mail::send('resetpassword',['id' => $this->email,'name' => $this->email],function($message) {
+            //Lấy địa chỉ email của người dùng
+            $message->to($this->email,'');
+            //Chưa check xem mail có tồn tại hay không
+            $message->subject('Thay đổi mật khẩu');
+        });
+
+        if( count(Mail::failures()) > 0) {
+            $error = '';
+
+            foreach(Mail::failures() as $email_address) {
+               $error = $error." - ".$email_address." <br />";
+            }
+            return $error;
+        }
+        return 'Thành công';
+    }
+
+    public function check($email,$pass) {
+        $value = DB::table('account')
+        ->where('email' ,'=', $email)->get();
+        $count = DB::table('account')
+        ->where('email' ,'=', $email)->count();
+        //dd( $value);
+        if($count == 0 ) return false;
+        if(Hash::check($pass, $value[0]->password)) {
+            return true;
+        }
+
+        return false;
+    }
 }
 
 
