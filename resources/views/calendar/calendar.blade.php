@@ -111,11 +111,16 @@ $(document).ready(function() {
             center: 'title',
             right: 'dayGridMonth,timeGridDay'
         },
-         buttonText: {
+        buttonText: {
           today: 'Hôm nay',
-          month: 'Tháng'
+          month: 'Tháng',
+          day: 'Ngày'
         },
         events : event,
+        eventTimeFormat: { 
+          hour: '2-digit',
+          minute: '2-digit',
+         },
         editable: false,
         droppable: true, // this allows things to be dropped onto the calendar !!!
         drop: function(info) {

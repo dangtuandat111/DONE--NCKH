@@ -21,9 +21,9 @@ class ScheduleController extends Controller
           Select 
           concat(IFNULL(Name_Teacher, 0), ' ', Module_Name,' ') as title, 
           CASE 
-          WHEN Shift_Schedules = 1 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 7 HOUR),INTERVAL 0 MINUTE) 
+          WHEN Shift_Schedules = 1 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 7 HOUR),INTERVAL 00 MINUTE) 
           WHEN Shift_Schedules = 2 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 9 HOUR),INTERVAL 35 MINUTE) 
-          WHEN Shift_Schedules = 3 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 13 HOUR),INTERVAL 0 MINUTE) 
+          WHEN Shift_Schedules = 3 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 13 HOUR),INTERVAL 00 MINUTE) 
           WHEN Shift_Schedules = 4 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 15 HOUR),INTERVAL 35 MINUTE)
           WHEN Shift_Schedules = 5 THEN DATE_ADD(DATE_ADD(Day_Schedules, INTERVAL 18 HOUR),INTERVAL 05 MINUTE) 
           ELSE DATE_ADD(Day_Schedules, INTERVAL 0 HOUR) 
