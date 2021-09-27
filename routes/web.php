@@ -29,7 +29,7 @@ Route::get('/',function() {
 
 Route::group(['middleware' => 'guest'] , function() {
 	Route::match(['get','post'],'login', ['as' => 'login', 'uses' =>'App\Http\Controllers\LoginController@index']);
-	Route::match(['get','post'],'resetPass', ['as' => 'login', 'uses' =>'App\Http\Controllers\LoginController@resetPass']);
+	Route::match(['get','post'],'resetPass', ['as' => 'resetPass', 'uses' =>'App\Http\Controllers\LoginController@resetPass']);
 });
 
 Route::group(['middleware' => 'auth' ], function() {
