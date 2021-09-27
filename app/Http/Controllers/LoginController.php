@@ -44,8 +44,7 @@ class LoginController extends Controller
             } else {
 
                 if (Auth::attempt(['email' => $request->input("email"), 'password' => $request->input("password")])) {
-                    return 1;
-                    return redirect('/home');
+                    return view('admin.home');
                   
                 } else {
                     
