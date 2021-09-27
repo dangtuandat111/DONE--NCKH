@@ -116,11 +116,8 @@ Route::group(['middleware' => 'auth' ], function() {
 	Route::get('fullcalendar','App\Http\Controllers\ScheduleController@getAll');
 	Route::get('calendar','App\Http\Controllers\ScheduleController@getOne');
 	//Route::get('testCalendar','App\Http\Controllers\ScheduleController@testGet');
-	Route::get('/home', ['as' => '/home' , 'uses' => 'App\Http\Controllers\LoginController@home']);
+	Route::get('/home', ['as' => 'home' , 'uses' => 'App\Http\Controllers\LoginController@home']);
 	Route::get('/logout', 'App\Http\Controllers\LoginController@Logout');
-
-
-
 });
 
 
