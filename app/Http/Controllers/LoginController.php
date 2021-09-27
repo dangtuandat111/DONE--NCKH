@@ -22,6 +22,7 @@ class LoginController extends Controller
     public $email ;
 	public function index(Request $request) {
         if($request->isMethod('post')){
+            return 1;
             // Kiểm tra dữ liệu nhập vào
             $rules = [
                 'email' =>'required|email|max:255', // chi gom chu hoac so va khong ket thuc bang so
