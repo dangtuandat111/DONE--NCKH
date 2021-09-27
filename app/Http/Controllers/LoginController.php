@@ -21,8 +21,7 @@ class LoginController extends Controller
     //Ham de goi trang login trong thu muc admin
     public $email ;
 	public function index(Request $request) {
-        if($request->isMethod('post')){
-            return 1;
+        if($request->isMethod('post')){ 
             // Kiểm tra dữ liệu nhập vào
             $rules = [
                 'email' =>'required|email|max:255', // chi gom chu hoac so va khong ket thuc bang so
@@ -45,7 +44,7 @@ class LoginController extends Controller
             } else {
 
                 if (Auth::attempt(['email' => $request->input("email"), 'password' => $request->input("password")])) {
-                    
+                    return 1;
                     return redirect('/home');
                   
                 } else {
