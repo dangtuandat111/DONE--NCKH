@@ -183,7 +183,6 @@ class AssignController extends Controller
 
     public function getFilter(Request $request) {
         
-        
             $md = (!empty($_GET["md"])) ? ($_GET["md"]) : ('');
             $dp = (!empty($_GET["dp"])) ? ($_GET["dp"]) : ('');
             $sy = (!empty($_GET["sy"])) ? ($_GET["sy"]) : ('');

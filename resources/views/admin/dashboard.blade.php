@@ -36,18 +36,7 @@ use Carbon\Carbon;
        
         <div class="info " > <!--20-->
           <a href="{{ url('/home') }}" class="d-block" style = 'text-decoration: underline; padding-bottom: 0px;'>
-            <?php 
-              $id = Auth::user()->id; 
-              $permission = Auth::user()->permission;
-              if($permission == 1){
-                // $dt = DB::table('teacher')->where('id_teacher','=',$id)->get();
-                // echo $dt[0]->teacher_name;
-              }
-              else {
-                $name = Auth::user()->username;
-                echo $name;
-              }
-            ?>
+            
             
           </a>
         

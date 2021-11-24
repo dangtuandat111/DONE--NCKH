@@ -134,7 +134,7 @@ $(document).ready(function() {
       var dp = $(this).val();
       
     });
-
+    
     $("#Filter").click(function() {
       var md = $("#select_md").val();
       var sy = $("#select_sy").val();
