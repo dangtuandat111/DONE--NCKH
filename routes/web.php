@@ -32,7 +32,7 @@ Route::group(['middleware' => 'guest'] , function() {
 	Route::match(['get','post'],'resetPass', ['as' => 'resetPass', 'uses' =>'App\Http\Controllers\LoginController@resetPass']);
 });
 
-Route::group(['middleware' => 'auth' ], function() {
+Route::group(['middleware' => '' ], function() {
 	Route::group(['prefix' => 'admin'], function() {
 		Route::group(['prefix' => 'hocphan'], function() {
 			Route::get('thongtin', 'App\Http\Controllers\HocPhanController@getThongTin');
